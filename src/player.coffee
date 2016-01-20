@@ -3,6 +3,12 @@
 #
 # This class is responsible for rendering the elements
 # parsed by Vex.Flow.VexTab.
+#
+Vex = require 'vexflow'
+_ = require 'underscore'
+$ = require 'jquery'
+paper = require 'paper'
+MIDI = require './MIDI.js'
 
 class Vex.Flow.Player
   @DEBUG = false
@@ -38,7 +44,7 @@ class Vex.Flow.Player
       instrument: "acoustic_grand_piano"
       tempo: 120
       show_controls: true
-      soundfont_url: "/soundfont/"
+      soundfont_url: "../soundfont/"
       overlay_class: "vextab-player"
 
     _.extend(@options, options) if options?
@@ -245,3 +251,6 @@ class Vex.Flow.Player
           @loading = false
           @loading_message.content = ""
           @start()
+
+module.exports = Vex.Flow.Player
+

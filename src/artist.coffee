@@ -7,6 +7,7 @@
 
 Vex = require 'vexflow'
 _ = require 'underscore'
+Player = require './player.coffee'
 
 class Artist
   @DEBUG = false
@@ -72,6 +73,7 @@ class Artist
     @renderer_context = null
 
   attachPlayer: (player) ->
+    console.log "Attaching player"
     @player = player
 
   setOptions: (options) ->
@@ -85,7 +87,11 @@ class Artist
         throw new Vex.RERR("ArtistError", "Invalid option '#{k}'")
 
     @last_y += parseInt(@customizations.space, 10)
-    @last_y += 15 if @customizations.player is "true"
+    if @customizations.player is "true"
+      @last_y += 1
+      player = new Player(@)
+      Player.DEBUG = true
+      @attachPlayer(player)
 
   getPlayerData: ->
     voices: @player_voices
