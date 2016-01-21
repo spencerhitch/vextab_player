@@ -7,7 +7,6 @@
 
 Vex = require 'vexflow'
 _ = require 'underscore'
-Player = require './player.coffee'
 
 class Artist
   @DEBUG = false
@@ -89,9 +88,11 @@ class Artist
     @last_y += parseInt(@customizations.space, 10)
     if @customizations.player is "true"
       @last_y += 1
-      player = new Player(@)
-      Player.DEBUG = true
-      @attachPlayer(player)
+#      if !@player
+#        player = new Player(this)
+#        console.log "Instantiating player."
+#        console.log(player)
+#        @attachPlayer(player)
 
   getPlayerData: ->
     voices: @player_voices

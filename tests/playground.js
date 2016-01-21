@@ -7,6 +7,7 @@ $(function() {
   VexTab = vextab.VexTab;
   Artist = vextab.Artist;
   Renderer = vextab.Vex.Flow.Renderer;
+  Player = vextab.Player;
 
   Artist.DEBUG = false;
   VexTab.DEBUG = false;
@@ -16,6 +17,7 @@ $(function() {
 
   // Initialize VexTab artist and parser.
   artist = new Artist(10, 10, 600, {scale: 0.8});
+  player = new Player(artist);
   vextab = new VexTab(artist);
 
   function render() {

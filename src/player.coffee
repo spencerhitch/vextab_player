@@ -3,12 +3,11 @@
 #
 # This class is responsible for rendering the elements
 # parsed by Vex.Flow.VexTab.
-#
+
 Vex = require 'vexflow'
 _ = require 'underscore'
 $ = require 'jquery'
 paper = require 'paper'
-MIDI = require './MIDI.js'
 
 class Vex.Flow.Player
   @DEBUG = false
@@ -247,6 +246,7 @@ class Vex.Flow.Player
         soundfontUrl: @options.soundfont_url
         instruments: [@options.instrument]
         callback: () =>
+          console.log("loadPlugin is succcesfully calling back.")
           Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] = true
           @loading = false
           @loading_message.content = ""
