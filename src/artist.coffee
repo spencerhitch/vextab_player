@@ -72,8 +72,9 @@ class Artist
     @renderer_context = null
 
   attachPlayer: (player) ->
-    console.log "Attaching player"
-    @player = player
+    if !@player
+      console.log "Attaching player"
+      @player = player
 
   setOptions: (options) ->
     L "setOptions: ", options

@@ -38,6 +38,7 @@ MIDI.Player = MIDI.Player || {};
 
 	root.loadPlugin = function(opts) {
 		if (typeof opts === 'function') {
+            console.log("type of opts is function");
 			opts = {onsuccess: opts};
 		}
 
@@ -78,6 +79,8 @@ MIDI.Player = MIDI.Player || {};
 				root.loadResource(opts);
 			}
 		});
+        /// Call the callback
+        opts.callback();
 	};
 
 	/*

@@ -28694,8 +28694,10 @@ Artist = (function() {
   };
 
   Artist.prototype.attachPlayer = function(player) {
-    console.log("Attaching player");
-    return this.player = player;
+    if (!this.player) {
+      console.log("Attaching player");
+      return this.player = player;
+    }
   };
 
   Artist.prototype.setOptions = function(options) {

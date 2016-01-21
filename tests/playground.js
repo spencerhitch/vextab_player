@@ -11,6 +11,7 @@ $(function() {
 
   Artist.DEBUG = false;
   VexTab.DEBUG = false;
+  Player.DEBUG = true;
 
   // Create VexFlow Renderer from canvas element with id #boo
   renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);
@@ -24,6 +25,7 @@ $(function() {
     try {
       vextab.reset();
       artist.reset();
+      player.reset();
       vextab.parse($("#blah").val());
       artist.render(renderer);
       $("#error").text("");
