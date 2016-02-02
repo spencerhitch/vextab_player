@@ -79,8 +79,11 @@ MIDI.Player = MIDI.Player || {};
 				root.loadResource(opts);
 			}
 		});
+
         /// Call the callback
-        opts.callback();
+        if (opts.callback){
+          opts.callback();
+        }
 	};
 
 	/*

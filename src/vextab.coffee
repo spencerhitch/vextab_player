@@ -64,6 +64,12 @@ class VexTab
         when "strings"
           num_strings = parseInt(option.value)
           throw error("Invalid number of strings: #{num_strings}") if (num_strings < 4 or num_strings > 8)
+        when "instruments"
+          try
+            instruments = JSON.parse(option.value)
+            console.log instruments
+          catch e
+            throw error("'#{option.key}' must be list of format ['item1','item2',...,'itemN']")
         else
           throw error("Invalid option '#{option.key}'")
 

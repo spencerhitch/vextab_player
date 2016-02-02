@@ -25,7 +25,6 @@ $(function() {
     try {
       vextab.reset();
       artist.reset();
-      player.reset();
       vextab.parse($("#blah").val());
       artist.render(renderer);
       $("#error").text("");

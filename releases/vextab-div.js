@@ -1,5 +1,5 @@
 /**
- * VexTab 2.0.10 built on 2016-01-20.
+ * VexTab 2.0.10 built on 2016-02-02.
  * Copyright (c) 2010 Mohit Muthanna Cheppudira <mohit@muthanna.com>
  *
  * http://www.vexflow.com  http://github.com/0xfe/vextab
@@ -30187,7 +30187,7 @@ VexTab = (function() {
   };
 
   VexTab.prototype.parseStaveOptions = function(options) {
-    var clefs, e, error, error1, error2, i, len, notation_option, num_strings, option, params, ref, ref1, ref2, voices;
+    var clefs, e, error, error1, error2, error3, i, instruments, len, notation_option, num_strings, option, params, ref, ref1, ref2, voices;
     params = {};
     if (options == null) {
       return params;
@@ -30244,6 +30244,15 @@ VexTab = (function() {
           num_strings = parseInt(option.value);
           if (num_strings < 4 || num_strings > 8) {
             throw error("Invalid number of strings: " + num_strings);
+          }
+          break;
+        case "instruments":
+          try {
+            instruments = JSON.parse(option.value);
+            console.log(instruments);
+          } catch (error3) {
+            e = error3;
+            throw error("'" + option.key + "' must be list of format ['item1','item2',...,'itemN']");
           }
           break;
         default:

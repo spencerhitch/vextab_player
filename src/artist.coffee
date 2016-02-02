@@ -87,13 +87,7 @@ class Artist
         throw new Vex.RERR("ArtistError", "Invalid option '#{k}'")
 
     @last_y += parseInt(@customizations.space, 10)
-    if @customizations.player is "true"
-      @last_y += 1
-#      if !@player
-#        player = new Player(this)
-#        console.log "Instantiating player."
-#        console.log(player)
-#        @attachPlayer(player)
+    @last_y += 1 if @customizations.player is "true"
 
   getPlayerData: ->
     voices: @player_voices
