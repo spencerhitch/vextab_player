@@ -64,12 +64,6 @@ class VexTab
         when "strings"
           num_strings = parseInt(option.value)
           throw error("Invalid number of strings: #{num_strings}") if (num_strings < 4 or num_strings > 8)
-        when "instruments"
-          try
-            instruments = JSON.parse(option.value)
-            console.log instruments
-          catch e
-            throw error("'#{option.key}' must be list of format ['item1','item2',...,'itemN']")
         else
           throw error("Invalid option '#{option.key}'")
 
@@ -208,6 +202,7 @@ class VexTab
     # Strip lines
     stripped_code = (line.trim() for line in code.split(/\r\n|\r|\n/))
     @elements = parser.parse(stripped_code.join("\n"))
+    console.log(@elements)
     if @elements
       @generate()
       @valid = true

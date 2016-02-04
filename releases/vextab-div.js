@@ -30249,7 +30249,7 @@ VexTab = (function() {
         case "instruments":
           try {
             instruments = JSON.parse(option.value);
-            console.log(instruments);
+            L(instruments);
           } catch (error3) {
             e = error3;
             throw error("'" + option.key + "' must be list of format ['item1','item2',...,'itemN']");
@@ -30468,6 +30468,7 @@ VexTab = (function() {
       return results;
     })();
     this.elements = parser.parse(stripped_code.join("\n"));
+    console.log(this.elements);
     if (this.elements) {
       this.generate();
       this.valid = true;

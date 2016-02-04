@@ -53,6 +53,7 @@ class Artist
       "connector-space": 0
 
     # Generated elements
+    @stavegroups = []
     @staves = []
     @tab_articulations = []
     @stave_articulations = []
@@ -214,6 +215,9 @@ class Artist
       if last_note instanceof Vex.Flow.BarNote
         notes.pop()
         stave.setEndBarType(last_note.getType())
+
+    for stavegroup in @stavegroups
+      L "Rendering stavegroups."
 
     for stave in @staves
       L "Rendering staves."
@@ -942,6 +946,9 @@ class Artist
     unless _.isEmpty(stave.note_notes)
       stave.note_voices.push(stave.note_notes)
       stave.note_notes = []
+
+  addStaveGroup(element, options) ->
+    L "addStave: ", element, opts
 
   addStave: (element, options) ->
     opts =
