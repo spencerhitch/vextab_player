@@ -58,8 +58,8 @@ class Artist
     @tab_articulations = []
     @stave_articulations = []
 
-    # Voices for player
-    @player_voices = []
+    # Staves for player
+    @player_staves = []
 
     # Current state
     @last_y = @y
@@ -74,7 +74,6 @@ class Artist
 
   attachPlayer: (player) ->
     if !@player
-      console.log "Attaching player"
       @player = player
 
   setOptions: (options) ->
@@ -91,7 +90,7 @@ class Artist
     @last_y += 1 if @customizations.player is "true"
 
   getPlayerData: ->
-    voices: @player_voices
+    staves: @player_staves
     context: @renderer_context
     scale: @customizations.scale
 
@@ -219,6 +218,8 @@ class Artist
     for stavegroup in @stavegroups
       L "Rendering stavegroups."
 
+      staves = []
+
       for stave in stavegroup.staves
         L "Rendering staves."
         # If the last note is a bar, then remove it and render it as a stave modifier.
@@ -238,7 +239,8 @@ class Artist
                         @customizations,
                         {beam_groups: stave.beam_groups})
   
-        @player_voices.push(voices)
+        staves.push(voices)
+    @player_staves.push(staves)
 
     L "Rendering tab articulations."
     for articulation in @tab_articulations

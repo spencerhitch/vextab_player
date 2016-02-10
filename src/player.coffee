@@ -136,30 +136,31 @@ class Vex.Flow.Player
         @stop()
 
     @paper.view.draw()
-    staves = data.voices
+    staves = data.staves
 
     total_ticks = new Fraction(0, 1)
-    for voice_group in staves
+    for stave in staves
       max_voice_tick = new Fraction(0, 1)
-      for voice, i in voice_group
+      for voice_group in stave
         total_voice_ticks = new Fraction(0, 1)
+        for voice, i in voice_group
 
-        for note in voice.getTickables()
-          unless note.shouldIgnoreTicks()
-            abs_tick = total_ticks.clone()
-            abs_tick.add(total_voice_ticks)
-            abs_tick.simplify()
-            key = abs_tick.toString()
+          for note in voice.getTickables()
+            unless note.shouldIgnoreTicks()
+              abs_tick = total_ticks.clone()
+              abs_tick.add(total_voice_ticks)
+              abs_tick.simplify()
+              key = abs_tick.toString()
 
-            if _.has(@tick_notes, key)
-              @tick_notes[key].notes.push(note)
-            else
-              @tick_notes[key] =
-                tick: abs_tick
-                value: abs_tick.value()
-                notes: [note]
+              if _.has(@tick_notes, key)
+                @tick_notes[key].notes.push(note)
+              else
+                @tick_notes[key] =
+                  tick: abs_tick
+                  value: abs_tick.value()
+                  notes: [note]
 
-            total_voice_ticks.add(note.getTicks())
+              total_voice_ticks.add(note.getTicks())
 
         if total_voice_ticks.value() > max_voice_tick.value()
           max_voice_tick.copy(total_voice_ticks)
