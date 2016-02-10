@@ -6,25 +6,28 @@
 */
 
 %{
-  var _ = require("underscore");
+  var _ = require("lodash");
 %}
 
 %lex
-%s notes text slur annotations options command
+%s notes text slur annotations options command stavegroup
 %%
 
-<INITIAL>"notes"              { this.begin('notes'); return 'NOTES'; }
-<INITIAL>"tabstave"           { this.begin('options'); return 'TABSTAVE'; }
-<INITIAL>"stave"              { this.begin('options'); return 'STAVE'; }
-<INITIAL>"voice"              { this.begin('options'); return 'VOICE'; }
-<INITIAL>"options"            { this.begin('options'); return 'OPTIONS'; }
-<INITIAL>"text"               { this.begin('text'); return 'TEXT'; }
-<INITIAL>"slur"               { this.begin('options'); return 'SLUR'; }
-<INITIAL,options>[^\s=]+      return 'WORD'
+<INITIAL>"notes"          { this.begin('notes'); return 'NOTES'; }
+<INITIAL>"stavegroup"          { this.begin('stavegroup'); return 'STAVEGROUP'; }
+<INITIAL>"options"        { this.begin('options'); return 'OPTIONS'; }
+<INITIAL>"text"           { this.begin('text'); return 'TEXT'; }
+<INITIAL>"slur"           { this.begin('options'); return 'SLUR'; }
+
+<INITIAL,stavegroup>"tabstave" { this.begin('options'); return 'TABSTAVE'; }
+<INITIAL,stavegroup>"stave"    { this.begin('options'); return 'STAVE'; }
+<INITIAL,stavegroup>"voice"    { this.begin('options'); return 'VOICE'; }
+
+<INITIAL,options>[^\s=]+  return 'WORD'
 
 
 /* Annotations */
-<notes>[$]                { this.begin('annotations'); return "$" }
+<notes>[$]                { this.begin('annotations'); return "$" ;}
 <annotations>[$]          { this.begin('notes'); return "$" }
 <annotations>[^,$]+       return 'WORD'
 
@@ -111,11 +114,38 @@ maybe_vextab
   ;
 
 vextab
-  : stave
+  : stavegroup
     { $$ = [$1] }
-  | vextab stave
+  | vextab stavegroup
     { $$ = [].concat($1, $2) }
   ;
+
+stavegroup
+  : STAVEGROUP stavelist
+    { $$ = {
+        element: "stavegroup",
+        stavelist: $2,
+        _l: @1.first_line,
+        _c: @1.first_column
+      }
+    }
+  | OPTIONS options {
+      $$ = {
+        element: "options",
+        params: $2,
+        _l: @1.first_line,
+        _c: @1.first_column
+      }
+    }
+  ;
+
+stavelist
+  : stave
+    { $$ = [$1] }
+  | stavelist stave
+    { $$ = [].concat($1, $2) }
+  ;
+    
 
 stave
   : voice maybe_options stave_data
@@ -132,14 +162,6 @@ stave
     { $$ = {
         element: $1,
         options: $2,
-        _l: @1.first_line,
-        _c: @1.first_column
-      }
-    }
-  | OPTIONS options {
-      $$ = {
-        element: "options",
-        params: $2,
         _l: @1.first_line,
         _c: @1.first_column
       }

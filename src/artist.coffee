@@ -54,7 +54,7 @@ class Artist
 
     # Generated elements
     @stavegroups = []
-    @staves = []
+#    @staves = []
     @tab_articulations = []
     @stave_articulations = []
 
@@ -322,7 +322,7 @@ class Artist
       play_note: null
 
     _.extend(params, note_params)
-    stave_notes = _.last(@staves).note_notes
+    stave_notes = _.last(_.last(@stavegroups).staves).note_notes
     stave_note = new Vex.Flow.StaveNote({
       keys: params.spec
       duration: @current_duration + (if params.is_rest then "r" else "")
@@ -346,7 +346,7 @@ class Artist
     stave_notes.push stave_note
 
   addTabNote: (spec, play_note=null) ->
-    tab_notes = _.last(@staves).tab_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
     new_tab_note = new Vex.Flow.TabNote({
       positions: spec,
       duration: @current_duration
@@ -368,7 +368,7 @@ class Artist
     L "addBar: ", type
     @closeBends()
     @key_manager.reset()
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
 
     TYPE = Vex.Flow.Barline.type
     type = switch type
@@ -408,7 +408,7 @@ class Artist
 
   openBends: (first_note, last_note, first_indices, last_indices) ->
     L "openBends", first_note, last_note, first_indices, last_indices
-    tab_notes = _.last(@staves).tab_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
 
     start_note = first_note
     start_indices = first_indices
@@ -432,7 +432,7 @@ class Artist
   closeBends: (offset=1) ->
     return unless @bend_start_index?
     L "closeBends(#{offset})"
-    tab_notes = _.last(@staves).tab_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
     for k, v of @current_bends
       phrase = []
       for bend in v
@@ -450,9 +450,9 @@ class Artist
   makeTuplets: (tuplets, notes) ->
     L "makeTuplets", tuplets, notes
     notes ?= tuplets
-    return unless _.last(@staves).note
-    stave_notes = _.last(@staves).note_notes
-    tab_notes = _.last(@staves).tab_notes
+    return unless _.last(_.last(@stavegroups).staves).note
+    stave_notes = _.last(_.last(@stavegroups).staves).note_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
 
     throw new Vex.RERR("ArtistError", "Not enough notes for tuplet") if stave_notes.length < notes
     modifier = new Vex.Flow.Tuplet(stave_notes[stave_notes.length - notes..], {num_notes: tuplets})
@@ -591,7 +591,7 @@ class Artist
     return makeIt(text)
 
   addAnnotations: (annotations) ->
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
     stave_notes = stave.note_notes
     tab_notes = stave.tab_notes
 
@@ -688,7 +688,7 @@ class Artist
 
   # This gets the previous (second-to-last) non-bar non-ghost note.
   getPreviousNoteIndex: ->
-    tab_notes = _.last(@staves).tab_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
     index = 2
     while index <= tab_notes.length
       note = tab_notes[tab_notes.length - index]
@@ -701,7 +701,7 @@ class Artist
     L "addDecorator: ", decorator
     return unless decorator?
 
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
     tab_notes = stave.tab_notes
     score_notes = stave.note_notes
     modifier = null
@@ -724,7 +724,7 @@ class Artist
 
   addArticulations: (articulations) ->
     L "addArticulations: ", articulations
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
     tab_notes = stave.tab_notes
     stave_notes = stave.note_notes
     if _.isEmpty(tab_notes) or _.isEmpty(articulations)
@@ -784,7 +784,7 @@ class Artist
         accidentals: []
         is_rest: true
 
-    tab_notes = _.last(@staves).tab_notes
+    tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
     if @customizations["tab-stems"] == "true"
       tab_note = new Vex.Flow.StaveNote({
         keys: [position || "r/4"]
@@ -801,7 +801,8 @@ class Artist
   addChord: (chord, chord_articulation, chord_decorator) ->
     return if _.isEmpty(chord)
     L "addChord: ", chord
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
+    L "stave in addChord.", stave
 
     specs = []          # The stave note specs
     play_notes = []     # Notes to be played by audio players
@@ -866,7 +867,6 @@ class Artist
       decorators[current_position] = note.decorator if note.decorator?
 
       current_position++
-
     for spec, i in specs
       saved_duration = @current_duration
       @setDuration(durations[i].time, durations[i].dot) if durations[i]?
@@ -886,7 +886,7 @@ class Artist
     @addChord([note])
 
   addTextVoice: ->
-    _.last(@staves).text_voices.push []
+    _.last(_.last(@stavegroups).staves).text_voices.push []
 
   setTextFont: (font) ->
     if font?
@@ -897,7 +897,7 @@ class Artist
         @customizations["font-style"] = parts[3]
 
   addTextNote: (text, position=0, justification="center", smooth=true, ignore_ticks=false) ->
-    voices = _.last(@staves).text_voices
+    voices = _.last(_.last(@stavegroups).staves).text_voices
     throw new Vex.RERR("ArtistError", "Can't add text note without text voice") if _.isEmpty(voices)
 
     font_face = @customizations["font-face"]
@@ -936,7 +936,7 @@ class Artist
 
   addVoice: (options) ->
     @closeBends()
-    stave = _.last(@staves)
+    stave = _.last(_.last(@stavegroups).staves)
     return @addStave(options) unless stave?
 
     unless _.isEmpty(stave.tab_notes)
@@ -947,10 +947,18 @@ class Artist
       stave.note_voices.push(stave.note_notes)
       stave.note_notes = []
 
-  addStaveGroup(element, options) ->
-    L "addStave: ", element, opts
+  addStaveGroup: () ->
+    @stavegroups.push({staves:[]})
+    L "addStaveGroup"
+    return
 
-  addStave: (element, options) ->
+  staveGroupsLength: () ->
+    return @stavegroups.length
+
+  getStaveGroup: (i) ->
+    return @stavegroups[i]
+
+  addStave: (stavegroup_index, element, options) ->
     opts =
       tuning: "standard"
       clef: "treble"
@@ -990,7 +998,7 @@ class Artist
 
     @closeBends()
     beam_groups = Vex.Flow.Beam.getDefaultBeamGroups(opts.time)
-    @staves.push {
+    @getStaveGroup(stavegroup_index).staves.push {
       tab: tab_stave,
       note: note_stave,
       tab_voices: [],

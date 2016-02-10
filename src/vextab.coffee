@@ -170,14 +170,24 @@ class VexTab
   generate: ->
     for stave in @elements
       switch stave.element
-        when "stave", "tabstave"
-          @artist.addStave(stave.element, @parseStaveOptions(stave.options))
-          @parseStaveElements(stave.notes) if stave.notes?
-          @parseStaveText(stave.text) if stave.text?
+        when "stavegroup"
+          newStaveGroupIndex = @artist.staveGroupsLength()
+          @artist.addStaveGroup()
+          for s in stave.stavelist
+            L "stave in generate", s
+            @artist.addStave(
+              newStaveGroupIndex,
+              s.element,
+              @parseStaveOptions(s.options)
+            )
+            @parseStaveElements(s.notes) if s.notes?
+            @parseStaveText(s.text) if s.text?
+          L "Stavegroup generated", @artist.stavegroups[newStaveGroupIndex]
         when "voice"
-          @artist.addVoice(@parseStaveOptions(stave.options))
-          @parseStaveElements(stave.notes) if stave.notes?
-          @parseStaveText(stave.text) if stave.text?
+          L "skipping voice for now."
+#          @artist.addVoice(@parseStaveOptions(stave.options))
+#          @parseStaveElements(stave.notes) if stave.notes?
+#          @parseStaveText(stave.text) if stave.text?
         when "options"
           options = {}
           for option in stave.params
@@ -202,7 +212,6 @@ class VexTab
     # Strip lines
     stripped_code = (line.trim() for line in code.split(/\r\n|\r|\n/))
     @elements = parser.parse(stripped_code.join("\n"))
-    console.log(@elements)
     if @elements
       @generate()
       @valid = true
