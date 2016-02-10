@@ -219,26 +219,26 @@ class Artist
     for stavegroup in @stavegroups
       L "Rendering stavegroups."
 
-    for stave in @staves
-      L "Rendering staves."
-      # If the last note is a bar, then remove it and render it as a stave modifier.
-      setBar(stave.tab, stave.tab_notes) if stave.tab?
-      setBar(stave.note, stave.note_notes) if stave.note?
-
-      stave.tab.setContext(ctx).draw() if stave.tab?
-      stave.note.setContext(ctx).draw() if stave.note?
-
-      stave.tab_voices.push(stave.tab_notes)
-      stave.note_voices.push(stave.note_notes)
-
-      voices = formatAndRender(ctx,
-                      if stave.tab? then {stave: stave.tab, voices: stave.tab_voices} else null,
-                      if stave.note? then {stave: stave.note, voices: stave.note_voices} else null,
-                      stave.text_voices,
-                      @customizations,
-                      {beam_groups: stave.beam_groups})
-
-      @player_voices.push(voices)
+      for stave in stavegroup.staves
+        L "Rendering staves."
+        # If the last note is a bar, then remove it and render it as a stave modifier.
+        setBar(stave.tab, stave.tab_notes) if stave.tab?
+        setBar(stave.note, stave.note_notes) if stave.note?
+  
+        stave.tab.setContext(ctx).draw() if stave.tab?
+        stave.note.setContext(ctx).draw() if stave.note?
+  
+        stave.tab_voices.push(stave.tab_notes)
+        stave.note_voices.push(stave.note_notes)
+  
+        voices = formatAndRender(ctx,
+                        if stave.tab? then {stave: stave.tab, voices: stave.tab_voices} else null,
+                        if stave.note? then {stave: stave.note, voices: stave.note_voices} else null,
+                        stave.text_voices,
+                        @customizations,
+                        {beam_groups: stave.beam_groups})
+  
+        @player_voices.push(voices)
 
     L "Rendering tab articulations."
     for articulation in @tab_articulations
