@@ -140,6 +140,7 @@ class Vex.Flow.Player
 
     total_ticks = new Fraction(0, 1)
     for stave in staves
+      # possibly set instrument from stave here?
       max_voice_tick = new Fraction(0, 1)
       for voice_group in stave
         total_voice_ticks = new Fraction(0, 1)
