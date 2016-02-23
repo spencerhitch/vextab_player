@@ -37,7 +37,7 @@ class Vex.Flow.Player
     "synth_drum": 118
   }
 
-  constructor: (@artist, options) ->
+  constructor: (@staves, options) ->
     L "Initializing player: ", options
     @options =
       instrument: "acoustic_grand_piano"
@@ -52,8 +52,11 @@ class Vex.Flow.Player
     @paper = null
     @reset()
 
-  setArtist: (artist) ->
-    @artist = artist
+  pushToStaves: (voice) ->
+    @staves.push(voice)
+
+  setStaves: (staves) ->
+    @staves = staves
     @reset()
 
   setTempo: (tempo) ->
@@ -69,7 +72,6 @@ class Vex.Flow.Player
     @reset()
 
   reset: ->
-    @artist.attachPlayer(this)
     @tick_notes = {}
     @all_ticks = []
     @tpm = @options.tempo * (RESOLUTION / 4)
@@ -104,39 +106,10 @@ class Vex.Flow.Player
       canvas: overlay.get(0)
     }
 
-  removeControls: ->
-    @play_button.remove() if @play_button?
-    @stop_button.remove() if @stop_button?
-    @paper.view.draw() if @paper?
 
   render: ->
     @reset()
-    data = @artist.getPlayerData()
-    @scale = data.scale
-
-    if not @paper
-      overlay = getOverlay(data.context, data.scale, @options.overlay_class)
-      @paper = overlay.paper
-
-    @marker = new @paper.Path.Rectangle(0,0,13,85)
-    @loading_message = new @paper.PointText(35, 12)
-
-    if @options.show_controls
-      @play_button = new @paper.Path.RegularPolygon(new @paper.Point(25,10), 3, 7, 7)
-      @play_button.fillColor = '#396'
-      @play_button.opacity = 0.8
-      @play_button.rotate(90)
-      @play_button.onMouseUp = (event) =>
-        @play()
-
-      @stop_button = new @paper.Path.Rectangle(3,3,10,10)
-      @stop_button.fillColor = '#396'
-      @stop_button.opacity = 0.8
-      @stop_button.onMouseUp = (event) =>
-        @stop()
-
-    @paper.view.draw()
-    staves = data.staves
+    staves = @staves
 
     total_ticks = new Fraction(0, 1)
     for stave in staves
@@ -172,11 +145,11 @@ class Vex.Flow.Player
     @total_ticks = _.last(@all_ticks)
     L @all_ticks
 
-  updateMarker: (x, y) ->
-    @marker.fillColor = '#369'
-    @marker.opacity = 0.2
-    @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
-    @paper.view.draw()
+#  updateMarker: (x, y) ->
+#    @marker.fillColor = '#369'
+#    @marker.opacity = 0.2
+#    @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
+#    @paper.view.draw()
 
   playNote: (notes) ->
     L "(#{@current_ticks}) playNote: ", notes
@@ -184,7 +157,7 @@ class Vex.Flow.Player
     for note in notes
       x = note.getAbsoluteX() + 4
       y = note.getStave().getYForLine(2)
-      @updateMarker(x, y) if @paper?
+#      @updateMarker(x, y) if @paper?
       continue if note.isRest()
 
       keys = note.getPlayNote()
@@ -217,8 +190,7 @@ class Vex.Flow.Player
   stop: ->
     L "Stop"
     window.clearInterval(@interval_id) if @interval_id?
-    @play_button.fillColor = '#396' if @play_button?
-    @paper.view.draw() if @paper?
+#    @paper.view.draw() if @paper?
     @interval_id = null
     @current_ticks = 0
     @next_event_tick = 0
@@ -228,7 +200,6 @@ class Vex.Flow.Player
   start: ->
     @stop()
     L "Start"
-    @play_button.fillColor = '#a36' if @play_button?
     MIDI.programChange(0, INSTRUMENTS[@options.instrument])
     @render() # try to update, maybe notes were changed dynamically
     @interval_id = window.setInterval((() => @refresh()), @refresh_rate)
@@ -238,11 +209,7 @@ class Vex.Flow.Player
     if Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] and not @loading
       @start()
     else
-      L "Loading instruments..."
-      @loading_message.content = "Loading instruments..."
-      @loading_message.fillColor = "green"
-      @loading = true
-      @paper.view.draw()
+#      @paper.view.draw()
 
       MIDI.loadPlugin
         soundfontUrl: @options.soundfont_url

@@ -4,7 +4,8 @@
 # This class is responsible for rendering the elements
 # parsed by Vex.Flow.VexTab.
 
-
+Conductor = require './conductor.coffee'
+Player = require './player.coffee'
 Vex = require 'vexflow'
 _ = require 'underscore'
 
@@ -59,7 +60,7 @@ class Artist
     @stave_articulations = []
 
     # Staves for player
-    @player_staves = []
+#    @player_staves = []
 
     # Current state
     @last_y = @y
@@ -72,9 +73,14 @@ class Artist
     @rendered = false
     @renderer_context = null
 
-  attachPlayer: (player) ->
-    if !@player
-      @player = player
+#  attachPlayer: (player) ->
+#    if !@player
+#      @player = player
+
+  attachConductor: (conductor) ->
+    L "Attaching conductor."
+    if !@conductor
+      @conductor = conductor
 
   setOptions: (options) ->
     L "setOptions: ", options
@@ -87,12 +93,19 @@ class Artist
         throw new Vex.RERR("ArtistError", "Invalid option '#{k}'")
 
     @last_y += parseInt(@customizations.space, 10)
-    @last_y += 1 if @customizations.player is "true"
+    if @customizations.player is "true"
+      @last_y += 1
+      conductor = new Conductor(this)
+      @attachConductor(conductor)
 
-  getPlayerData: ->
-    staves: @player_staves
+  getConductorData: ->
     context: @renderer_context
     scale: @customizations.scale
+
+#  getPlayerData: ->
+#    staves: @player_staves
+#    context: @renderer_context
+#    scale: @customizations.scale
 
   parseBool = (str) ->
     return (str == "true")
@@ -218,9 +231,9 @@ class Artist
     for stavegroup in @stavegroups
       L "Rendering stavegroups."
 
-      staves = []
+#      staves = []
 
-      for stave in stavegroup.staves
+      for stave, i in stavegroup.staves
         L "Rendering staves."
         # If the last note is a bar, then remove it and render it as a stave modifier.
         setBar(stave.tab, stave.tab_notes) if stave.tab?
@@ -238,9 +251,14 @@ class Artist
                         stave.text_voices,
                         @customizations,
                         {beam_groups: stave.beam_groups})
-  
-        staves.push(voices)
-    @player_staves.push(staves)
+#        staves.push(voices)
+        if @conductor.getPlayer(i)
+          @conductor.getPlayer(i).pushToStaves(voices)
+        else
+          player = new Player([voices])
+          @conductor.addPlayer(player)
+    
+#    @player_staves.push(staves)
 
     L "Rendering tab articulations."
     for articulation in @tab_articulations
@@ -250,13 +268,21 @@ class Artist
     for articulation in @stave_articulations
       articulation.setContext(ctx).draw()
 
-    if @player?
+#    if @player?
+#      if @customizations.player is "true"
+#        @player.setTempo(parseInt(@customizations.tempo, 10))
+#        @player.setInstrument(@customizations.instrument)
+#        @player.render()
+#      else
+#        @player.removeControls()
+#    @rendered = true
+
+    if @conductor?
       if @customizations.player is "true"
-        @player.setTempo(parseInt(@customizations.tempo, 10))
-        @player.setInstrument(@customizations.instrument)
-        @player.render()
+        @conductor.setTempo(parseInt(@customizations.tempo, 10))
+        @conductor.render()
       else
-        @player.removeControls()
+        @conductor.removeControls()
     @rendered = true
 
     unless Artist.NOLOGO
