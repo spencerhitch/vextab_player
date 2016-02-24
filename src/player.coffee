@@ -10,7 +10,7 @@ $ = require 'jquery'
 paper = require 'paper'
 
 class Vex.Flow.Player
-  @DEBUG = false
+  @DEBUG = true
   @INSTRUMENTS_LOADED = {}
   L = (args...) -> console?.log("(Vex.Flow.Player)", args...) if Vex.Flow.Player.DEBUG
 
@@ -200,6 +200,7 @@ class Vex.Flow.Player
   start: ->
     @stop()
     L "Start"
+    L MIDI
     MIDI.programChange(0, INSTRUMENTS[@options.instrument])
     @render() # try to update, maybe notes were changed dynamically
     @interval_id = window.setInterval((() => @refresh()), @refresh_rate)
