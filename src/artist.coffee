@@ -256,6 +256,7 @@ class Artist
           @conductor.getPlayer(i).pushToStaves(voices)
         else
           player = new Player([voices])
+          player.setConductor(@conductor)
           @conductor.addPlayer(player)
     
 #    @player_staves.push(staves)

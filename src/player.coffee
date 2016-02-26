@@ -45,15 +45,19 @@ class Vex.Flow.Player
       show_controls: true
       soundfont_url: "../soundfont/"
       overlay_class: "vextab-player"
-
+ 
     _.extend(@options, options) if options?
     L "Using soundfonts in: #{@options.soundfont_url}"
     @interval_id = null
-    @paper = null
+    @conductor = null
+    @channelNumber = 0
     @reset()
 
   pushToStaves: (voice) ->
     @staves.push(voice)
+
+  setConductor: (conductor) ->
+    @conductor = conductor 
 
   setStaves: (staves) ->
     @staves = staves
@@ -111,30 +115,30 @@ class Vex.Flow.Player
     @reset()
     staves = @staves
 
+    L staves
+
     total_ticks = new Fraction(0, 1)
     for stave in staves
       # possibly set instrument from stave here?
       max_voice_tick = new Fraction(0, 1)
-      for voice_group in stave
+      for voice in stave
         total_voice_ticks = new Fraction(0, 1)
-        for voice, i in voice_group
+        for note in voice.getTickables()
+          unless note.shouldIgnoreTicks()
+            abs_tick = total_ticks.clone()
+            abs_tick.add(total_voice_ticks)
+            abs_tick.simplify()
+            key = abs_tick.toString()
 
-          for note in voice.getTickables()
-            unless note.shouldIgnoreTicks()
-              abs_tick = total_ticks.clone()
-              abs_tick.add(total_voice_ticks)
-              abs_tick.simplify()
-              key = abs_tick.toString()
+            if _.has(@tick_notes, key)
+              @tick_notes[key].notes.push(note)
+            else
+              @tick_notes[key] =
+                tick: abs_tick
+                value: abs_tick.value()
+                notes: [note]
 
-              if _.has(@tick_notes, key)
-                @tick_notes[key].notes.push(note)
-              else
-                @tick_notes[key] =
-                  tick: abs_tick
-                  value: abs_tick.value()
-                  notes: [note]
-
-              total_voice_ticks.add(note.getTicks())
+            total_voice_ticks.add(note.getTicks())
 
         if total_voice_ticks.value() > max_voice_tick.value()
           max_voice_tick.copy(total_voice_ticks)
@@ -143,6 +147,7 @@ class Vex.Flow.Player
 
     @all_ticks = _.sortBy(_.values(@tick_notes), (tick) -> tick.value)
     @total_ticks = _.last(@all_ticks)
+    L "rendered"
     L @all_ticks
 
 #  updateMarker: (x, y) ->
@@ -199,28 +204,20 @@ class Vex.Flow.Player
 
   start: ->
     @stop()
-    L "Start"
-    L MIDI
     MIDI.programChange(0, INSTRUMENTS[@options.instrument])
     @render() # try to update, maybe notes were changed dynamically
     @interval_id = window.setInterval((() => @refresh()), @refresh_rate)
 
-  play: ->
-    L "Play: ", @refresh_rate, @ticks_per_refresh
-    if Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] and not @loading
-      @start()
-    else
-#      @paper.view.draw()
-
-      MIDI.loadPlugin
-        soundfontUrl: @options.soundfont_url
-        instruments: [@options.instrument]
-        callback: () =>
-          console.log("loadPlugin is succcesfully calling back.")
-          Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] = true
-          @loading = false
-          @loading_message.content = ""
-          @start()
+  loadPlugin: ->
+    MIDI.loadPlugin
+      soundfontUrl: @options.soundfont_url
+      instruments: [@options.instrument]
+      callback: () =>
+        L MIDI, "loadPlugin is succcesfully calling back."
+        Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] = true
+        @conductor.loading_message.content = "Loading instruments..."
+        @conductor.loading = true
+        @start()
 
 module.exports = Vex.Flow.Player
 
