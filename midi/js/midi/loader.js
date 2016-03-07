@@ -42,8 +42,6 @@ MIDI.Player = MIDI.Player || {};
 			opts = {onsuccess: opts};
 		}
 
-        console.log("Successfully calling loadPlugin");
-
 		root.soundfontUrl = opts.soundfontUrl || root.soundfontUrl;
 
 		/// Detect the best type of audio to use

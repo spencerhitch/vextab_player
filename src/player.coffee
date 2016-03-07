@@ -11,7 +11,6 @@ paper = require 'paper'
 
 class Vex.Flow.Player
   @DEBUG = true
-  @INSTRUMENTS_LOADED = {}
   L = (args...) -> console?.log("(Vex.Flow.Player)", args...) if Vex.Flow.Player.DEBUG
 
   Fraction = Vex.Flow.Fraction
@@ -40,7 +39,6 @@ class Vex.Flow.Player
   constructor: (@staves, options) ->
     L "Initializing player: ", options
     @options =
-      instrument: "acoustic_grand_piano"
       tempo: 120
       show_controls: true
       soundfont_url: "../soundfont/"
@@ -51,13 +49,17 @@ class Vex.Flow.Player
     @interval_id = null
     @conductor = null
     @channelNumber = 0
+    @instrument = "acoustic_grand_piano"
     @reset()
 
   pushToStaves: (voice) ->
     @staves.push(voice)
 
   setConductor: (conductor) ->
-    @conductor = conductor 
+    @conductor = conductor
+
+  setChannelNumber: (i) ->
+    @channelNumber = i
 
   setStaves: (staves) ->
     @staves = staves
@@ -69,10 +71,10 @@ class Vex.Flow.Player
     @reset()
 
   setInstrument: (instrument) ->
-    L "New instrument: ", instrument
+    L "Setting instrument." , instrument
     if instrument not in _.keys(INSTRUMENTS)
       throw new Vex.RERR("PlayerError", "Invalid instrument: " + instrument)
-    @options.instrument = instrument
+    @instrument = instrument
     @reset()
 
   reset: ->
@@ -115,8 +117,6 @@ class Vex.Flow.Player
     @reset()
     staves = @staves
 
-    L staves
-
     total_ticks = new Fraction(0, 1)
     for stave in staves
       # possibly set instrument from stave here?
@@ -147,8 +147,6 @@ class Vex.Flow.Player
 
     @all_ticks = _.sortBy(_.values(@tick_notes), (tick) -> tick.value)
     @total_ticks = _.last(@all_ticks)
-    L "rendered"
-    L @all_ticks
 
 #  updateMarker: (x, y) ->
 #    @marker.fillColor = '#369'
@@ -174,8 +172,9 @@ class Vex.Flow.Player
         continue unless note_value?
 
         midi_note = (24 + (octave * 12)) + noteValues[note].int_val
-        MIDI.noteOn(0, midi_note, 127, 0)
-        MIDI.noteOff(0, midi_note, duration)
+        console.log("Play note this.", this)
+        MIDI.noteOn(INSTRUMENTS[@instrument], midi_note, 127, 0)
+        MIDI.noteOff(INSTRUMENTS[@instrument], midi_note, duration)
 
   refresh: ->
     if @done
@@ -204,20 +203,19 @@ class Vex.Flow.Player
 
   start: ->
     @stop()
-    MIDI.programChange(0, INSTRUMENTS[@options.instrument])
+    L "In start(): ", @instrument, INSTRUMENTS[@instrument]
+    MIDI.programChange(@channelNumber, INSTRUMENTS[@instrument])
     @render() # try to update, maybe notes were changed dynamically
     @interval_id = window.setInterval((() => @refresh()), @refresh_rate)
 
   loadPlugin: ->
     MIDI.loadPlugin
       soundfontUrl: @options.soundfont_url
-      instruments: [@options.instrument]
+      instruments: @instrument
       callback: () =>
-        L MIDI, "loadPlugin is succcesfully calling back."
-        Vex.Flow.Player.INSTRUMENTS_LOADED[@options.instrument] = true
-        @conductor.loading_message.content = "Loading instruments..."
-        @conductor.loading = true
+        Vex.Flow.Player.INSTRUMENTS_LOADED[@instrument] = true
+        @conductor.loading_message.content = ""
+        @conductor.loading = false
         @start()
 
 module.exports = Vex.Flow.Player
-

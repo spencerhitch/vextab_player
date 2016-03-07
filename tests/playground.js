@@ -9,7 +9,7 @@ $(function() {
   Renderer = vextab.Vex.Flow.Renderer;
 
   Artist.DEBUG = true;
-  VexTab.DEBUG = true;
+  VexTab.DEBUG = false;
 
   // Create VexFlow Renderer from canvas element with id #boo
   renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);

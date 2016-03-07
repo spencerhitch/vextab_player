@@ -44,7 +44,6 @@ class Artist
       "space": 0
       "player": "false"
       "tempo": 120
-      "instrument": "acoustic_grand_piano"
       "accidentals": "standard"  # standard / cautionary
       "tab-stems": "false"
       "tab-stem-direction": "up"
@@ -256,7 +255,9 @@ class Artist
           @conductor.getPlayer(i).pushToStaves(voices)
         else
           player = new Player([voices])
+          player.setInstrument(stave.instrument)
           player.setConductor(@conductor)
+          player.setChannelNumber(@conductor.getPlayersLength())
           @conductor.addPlayer(player)
     
 #    @player_staves.push(staves)
@@ -995,6 +996,7 @@ class Artist
       notation: if element == "tabstave" then "false" else "true"
       tablature: if element == "stave" then "false" else "true"
       strings: 6
+      instrument: "acoustic_grand_piano"
 
     _.extend(opts, options)
     L "addStave: ", element, opts
@@ -1030,6 +1032,7 @@ class Artist
     @getStaveGroup(stavegroup_index).staves.push {
       tab: tab_stave,
       note: note_stave,
+      instrument: opts.instrument,
       tab_voices: [],
       note_voices: [],
       tab_notes: [],

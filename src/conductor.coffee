@@ -12,6 +12,7 @@ paper = require 'paper'
 
 class Vex.Flow.Conductor
   @DEBUG = true
+  @INSTRUMENTS_LOADED = {}
   L = (args...) -> console?.log("(Vex.Flow.Conductor)", args...) if Vex.Flow.Conductor.DEBUG
 
   Fraction = Vex.Flow.Fraction
@@ -22,6 +23,7 @@ class Vex.Flow.Conductor
   constructor: (@artist, options) ->
     L "Initializing conductor: ", options
     @players = []
+    @instruments = []
     @options =
       tempo: 120
       show_controls: true
@@ -40,6 +42,7 @@ class Vex.Flow.Conductor
     return @players[i]
 
   addPlayer: (player) ->
+    @instruments.push(player.instrument)
     @players.push(player)
 
   setTempo: (tempo) ->
@@ -122,8 +125,10 @@ class Vex.Flow.Conductor
     @play_button.fillColor = '#396' if @play_button?
     @paper.view.draw() if @paper?
 
+  getPlayersLength: ->
+    return @players.length
+
   startPlayers: ->
-    @stopPlayers()
     L "Starting Players"
     @play_button.fillColor = '#a36' if @play_button?
     _.each(@players, (player) -> player.start())
@@ -132,18 +137,28 @@ class Vex.Flow.Conductor
     # underscore each is synchronous so this probably isn't going to work correctly,
     # might need async.js each method
     self = this
-    _.each(@players, (player) ->
-      if Player.INSTRUMENTS_LOADED[player.options.instrument] and not @loading
-        player.start()
-      else
-        L "Loading instruments..."
-        L self.loading_message
-        self.loading_message.content = "Loading instruments..."
-        self.loading_message.fillColor = "green"
-        self.loading = true
-        self.paper.view.draw()
-
-        player.loadPlugin())
+    flag = true
+    _.each(@instruments, (instrument) ->
+      if  not Vex.Flow.Conductor.INSTRUMENTS_LOADED[instrument] or @loading
+        flag = false
+    )
+    if flag
+      @startPlayers()
+    else
+      L "Loading instruments..."
+      L self.loading_message
+      self.loading_message.content = "Loading instruments..."
+      self.loading_message.fillColor = "green"
+      self.loading = true
+      self.paper.view.draw()
+      MIDI.loadPlugin
+        soundfontUrl: @options.soundfont_url
+        instruments: @instruments
+        callback: () =>
+          Vex.Flow.Conductor.INSTRUMENTS_LOADED[@instrument] = true
+          self.loading_message.content = ""
+          self.loading = false
+          self.startPlayers()
 
 module.exports = Vex.Flow.Conductor
 
