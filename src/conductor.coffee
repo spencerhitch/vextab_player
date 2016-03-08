@@ -20,6 +20,24 @@ class Vex.Flow.Conductor
   noteValues = Vex.Flow.Music.noteValues
   drawDot = Vex.drawDot
 
+  INSTRUMENTS = {
+    "acoustic_grand_piano": 0,
+    "acoustic_guitar_nylon": 24,
+    "acoustic_guitar_steel": 25,
+    "electric_guitar_jazz": 26,
+    "distortion_guitar": 30,
+    "electric_bass_finger": 33,
+    "electric_bass_pick": 34,
+    "trumpet": 56,
+    "brass_section": 61,
+    "soprano_sax": 64,
+    "alto_sax": 65,
+    "tenor_sax": 66,
+    "baritone_sax": 67,
+    "flute": 73,
+    "synth_drum": 118
+  }
+
   constructor: (@artist, options) ->
     L "Initializing conductor: ", options
     @players = []
@@ -156,6 +174,9 @@ class Vex.Flow.Conductor
         instruments: @instruments
         callback: () =>
           Vex.Flow.Conductor.INSTRUMENTS_LOADED[@instrument] = true
+          _.each(@players, (player) ->
+            MIDI.programChange(player.channelNumber,
+               INSTRUMENTS[player.instrument]))
           self.loading_message.content = ""
           self.loading = false
           self.startPlayers()

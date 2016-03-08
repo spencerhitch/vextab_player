@@ -173,8 +173,8 @@ class Vex.Flow.Player
 
         midi_note = (24 + (octave * 12)) + noteValues[note].int_val
         console.log("Play note this.", this)
-        MIDI.noteOn(INSTRUMENTS[@instrument], midi_note, 127, 0)
-        MIDI.noteOff(INSTRUMENTS[@instrument], midi_note, duration)
+        MIDI.noteOn(@channelNumber, midi_note, 127, 0)
+        MIDI.noteOff(@channelNumber, midi_note, duration)
 
   refresh: ->
     if @done
@@ -204,18 +204,8 @@ class Vex.Flow.Player
   start: ->
     @stop()
     L "In start(): ", @instrument, INSTRUMENTS[@instrument]
-    MIDI.programChange(@channelNumber, INSTRUMENTS[@instrument])
+#    MIDI.programChange(@channelNumber, INSTRUMENTS[@instrument])
     @render() # try to update, maybe notes were changed dynamically
     @interval_id = window.setInterval((() => @refresh()), @refresh_rate)
-
-  loadPlugin: ->
-    MIDI.loadPlugin
-      soundfontUrl: @options.soundfont_url
-      instruments: @instrument
-      callback: () =>
-        Vex.Flow.Player.INSTRUMENTS_LOADED[@instrument] = true
-        @conductor.loading_message.content = ""
-        @conductor.loading = false
-        @start()
 
 module.exports = Vex.Flow.Player
