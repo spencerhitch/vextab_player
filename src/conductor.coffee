@@ -82,8 +82,8 @@ class Vex.Flow.Conductor
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
-    overlay.css("left", 0)
-    overlay.css("top", 0)
+    overlay.css("left", 30)
+    overlay.css("top", 70)
     overlay.addClass(overlay_class)
 
     $(canvas).after(overlay)
@@ -98,6 +98,9 @@ class Vex.Flow.Conductor
       canvas: overlay.get(0)
     }
 
+  getPaper: ->
+    return @paper
+
   removeControls: ->
     @play_button.remove() if @play_button?
     @stop_button.remove() if @stop_button?
@@ -106,6 +109,7 @@ class Vex.Flow.Conductor
   render: ->
     @reset()
     data = @artist.getConductorData()
+    @context = data.context
     @scale = data.scale
 
     if not @paper
@@ -173,10 +177,9 @@ class Vex.Flow.Conductor
         soundfontUrl: @options.soundfont_url
         instruments: @instruments
         callback: () =>
-          Vex.Flow.Conductor.INSTRUMENTS_LOADED[@instrument] = true
           _.each(@players, (player) ->
-            MIDI.programChange(player.channelNumber,
-               INSTRUMENTS[player.instrument]))
+            Vex.Flow.Conductor.INSTRUMENTS_LOADED[player.instrument] = true
+            MIDI.programChange(player.channelNumber, INSTRUMENTS[player.instrument]))
           self.loading_message.content = ""
           self.loading = false
           self.startPlayers()

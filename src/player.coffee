@@ -48,6 +48,7 @@ class Vex.Flow.Player
     L "Using soundfonts in: #{@options.soundfont_url}"
     @interval_id = null
     @conductor = null
+    @paper = null
     @channelNumber = 0
     @instrument = "acoustic_grand_piano"
     @reset()
@@ -96,8 +97,8 @@ class Vex.Flow.Player
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
-    overlay.css("left", 0)
-    overlay.css("top", 0)
+    overlay.css("left", 15)
+    overlay.css("top", 55)
     overlay.addClass(overlay_class)
 
     $(canvas).after(overlay)
@@ -115,6 +116,16 @@ class Vex.Flow.Player
 
   render: ->
     @reset()
+    @scale = @conductor.scale
+    @context = @conductor.context
+
+    if not @paper
+      overlay = getOverlay(@context, @scale, @options.overlay_class)
+      @paper = overlay.paper
+
+    @marker = new @paper.Path.Rectangle(0,0,13,65)
+    @paper.view.draw()
+
     staves = @staves
 
     total_ticks = new Fraction(0, 1)
@@ -148,11 +159,12 @@ class Vex.Flow.Player
     @all_ticks = _.sortBy(_.values(@tick_notes), (tick) -> tick.value)
     @total_ticks = _.last(@all_ticks)
 
-#  updateMarker: (x, y) ->
-#    @marker.fillColor = '#369'
-#    @marker.opacity = 0.2
-#    @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
-#    @paper.view.draw()
+  updateMarker: (x, y) ->
+    L "update marker: ", x, y
+    @marker.fillColor = '#369'
+    @marker.opacity = 0.2
+    @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
+    @paper.view.draw()
 
   playNote: (notes) ->
     L "(#{@current_ticks}) playNote: ", notes
@@ -160,7 +172,7 @@ class Vex.Flow.Player
     for note in notes
       x = note.getAbsoluteX() + 4
       y = note.getStave().getYForLine(2)
-#      @updateMarker(x, y) if @paper?
+      @updateMarker(x, y) if @paper?
       continue if note.isRest()
 
       keys = note.getPlayNote()
@@ -172,7 +184,6 @@ class Vex.Flow.Player
         continue unless note_value?
 
         midi_note = (24 + (octave * 12)) + noteValues[note].int_val
-        console.log("Play note this.", this)
         MIDI.noteOn(@channelNumber, midi_note, 127, 0)
         MIDI.noteOff(@channelNumber, midi_note, duration)
 
@@ -194,7 +205,7 @@ class Vex.Flow.Player
   stop: ->
     L "Stop"
     window.clearInterval(@interval_id) if @interval_id?
-#    @paper.view.draw() if @paper?
+    @paper.view.draw() if @paper?
     @interval_id = null
     @current_ticks = 0
     @next_event_tick = 0
