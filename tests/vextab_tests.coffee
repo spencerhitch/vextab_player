@@ -17,8 +17,8 @@ equal = qunit.equal
 ok = qunit.ok
 expect = qunit.expect
 
-Artist.DEBUG = false;
-VexTab.DEBUG = false;
+Artist.DEBUG = true;
+VexTab.DEBUG = true;
 
 class VexTabTests
   @Start: ->
@@ -601,8 +601,8 @@ class VexTabTests
 
   @fingeringAndStrings: ->
     code = """
-    options space=40 player=true tempo=80 instrument=acoustic_guitar_nylon
-    stavegroup tabstave notation=true tablature=false key=G time=4/4
+    options space=40 player=true tempo=80 
+    stavegroup tabstave notation=true tablature=false key=G time=4/4 instrument=acoustic_guitar_nylon
     voice
         notes !octave-shift -1!
         notes :8 ## (D/4.G/4.D/5.G/5)

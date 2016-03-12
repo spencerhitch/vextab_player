@@ -251,9 +251,9 @@ class Artist
                         @customizations,
                         {beam_groups: stave.beam_groups})
 #        staves.push(voices)
-        if @conductor.getPlayer(i)
+        if @conductor?.getPlayer(i)
           @conductor.getPlayer(i).pushToStaves(voices)
-        else
+        else if @conductor?
           player = new Player([voices])
           player.setInstrument(stave.instrument)
           player.setConductor(@conductor)
@@ -461,7 +461,7 @@ class Artist
   # Close and apply all the bends to the last N notes.
   closeBends: (offset=1) ->
     return unless @bend_start_index?
-    L "closeBends(#{offset})"
+    L "closeBends(#{offset})", @stavegroups
     tab_notes = _.last(_.last(@stavegroups).staves).tab_notes
     for k, v of @current_bends
       phrase = []
@@ -999,7 +999,6 @@ class Artist
       instrument: "acoustic_grand_piano"
 
     _.extend(opts, options)
-    L "addStave: ", element, opts
 
     tab_stave = null
     note_stave = null
@@ -1027,9 +1026,7 @@ class Artist
       tab_stave.setNoteStartX(tabstave_start_x)
       @last_y += tab_stave.getHeight() + @options.tab_stave_lower_spacing
 
-    @closeBends()
-    beam_groups = Vex.Flow.Beam.getDefaultBeamGroups(opts.time)
-    @getStaveGroup(stavegroup_index).staves.push {
+    stave = {
       tab: tab_stave,
       note: note_stave,
       instrument: opts.instrument,
@@ -1040,6 +1037,12 @@ class Artist
       text_voices: [],
       beam_groups: beam_groups
     }
+    L "addStave: ", stave
+    @getStaveGroup(stavegroup_index).staves.push(stave)
+
+    @closeBends()
+    beam_groups = Vex.Flow.Beam.getDefaultBeamGroups(opts.time)
+
 
     @tuning.setTuning(opts.tuning)
     @key_manager.setKey(opts.key)

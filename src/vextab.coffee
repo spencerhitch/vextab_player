@@ -175,8 +175,9 @@ class VexTab
         when "stavegroup"
           newStaveGroupIndex = @artist.staveGroupsLength()
           @artist.addStaveGroup()
+          L "stave in generate: ", stave
           for s in stave.stavelist
-            L "stave in generate", s
+            L "s in stavelist in stave in generate: ", s
             @artist.addStave(
               newStaveGroupIndex,
               s.element,
@@ -184,7 +185,7 @@ class VexTab
             )
             @parseStaveElements(s.notes) if s.notes?
             @parseStaveText(s.text) if s.text?
-          L "Stavegroup generated", @artist.stavegroups[newStaveGroupIndex]
+
         when "voice"
           L "skipping voice for now."
 #          @artist.addVoice(@parseStaveOptions(stave.options))
