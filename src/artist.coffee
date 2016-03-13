@@ -213,8 +213,6 @@ class Artist
     ctx.scale(@customizations.scale, @customizations.scale)
     ctx.clear()
     ctx.setFont(@options.font_face, @options.font_size, "")
-#    ctx.setFillStyle("#666")
-#    ctx.setStrokeStyle("#666")
 
     @renderer_context = ctx
 

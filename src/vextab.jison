@@ -458,6 +458,11 @@ abc_accidental
   | '@' '@'             { $$ = "bb" }  // double flat
   | 'n'                 { $$ = "n" }   // natural
   | 'm'                 { $$ = "m" }   // mute 
+  | '#' 'm'             { $$ = "#m" }  // muted sharp
+  | '#' '#' 'm'         { $$ = "##m" } // muted double sharp
+  | '@' 'm'             { $$ = "bm" }  // muted flat
+  | '@' '@' 'm'         { $$ = "bbm" } // muted double flat
+  | 'n' 'm'             { $$ = "nm" }  // muted natural
   |
   ;
 
