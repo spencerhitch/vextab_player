@@ -97,7 +97,7 @@ class Vex.Flow.Player
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
-    overlay.css("left", 15)
+    overlay.css("left", 22)
     overlay.css("top", 55)
     overlay.addClass(overlay_class)
 
