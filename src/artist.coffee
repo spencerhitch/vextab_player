@@ -876,7 +876,6 @@ class Artist
           acc = accidental.split("_")[0]
         else
           acc = ""
-
         play_note = "#{new_note}#{acc}"
         note.fret = 'X' unless note.fret?
       else if note.fret?

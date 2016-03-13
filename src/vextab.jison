@@ -85,6 +85,7 @@
 /* ABC */
 <notes>[A-GXLR]           return 'ABC'
 <notes>[n]                return 'n'
+<notes>[m]                return 'm'
 <notes>[~]                return '~'
 
 /* Newlines reset your state */
@@ -456,6 +457,7 @@ abc_accidental
   | '@'                 { $$ = "b" }   // flat
   | '@' '@'             { $$ = "bb" }  // double flat
   | 'n'                 { $$ = "n" }   // natural
+  | 'm'                 { $$ = "m" }   // mute 
   |
   ;
 

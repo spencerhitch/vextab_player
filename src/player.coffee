@@ -181,7 +181,7 @@ class Vex.Flow.Player
         [note, octave] = key.split("/")
         note = note.trim().toLowerCase()
         note_value = noteValues[note]
-        continue unless note_value?
+        continue unless note_value? and note_value.int_val != -1
 
         midi_note = (24 + (octave * 12)) + noteValues[note].int_val
         MIDI.noteOn(@channelNumber, midi_note, 127, 0)
