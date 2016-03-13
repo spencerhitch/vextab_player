@@ -101,11 +101,6 @@ class Artist
     context: @renderer_context
     scale: @customizations.scale
 
-#  getPlayerData: ->
-#    staves: @player_staves
-#    context: @renderer_context
-#    scale: @customizations.scale
-
   parseBool = (str) ->
     return (str == "true")
 
@@ -218,6 +213,8 @@ class Artist
     ctx.scale(@customizations.scale, @customizations.scale)
     ctx.clear()
     ctx.setFont(@options.font_face, @options.font_size, "")
+#    ctx.setFillStyle("#666")
+#    ctx.setStrokeStyle("#666")
 
     @renderer_context = ctx
 
@@ -250,7 +247,7 @@ class Artist
                         stave.text_voices,
                         @customizations,
                         {beam_groups: stave.beam_groups})
-#        staves.push(voices)
+
         if @conductor?.getPlayer(i)
           @conductor.getPlayer(i).pushToStaves(voices)
         else if @conductor?
