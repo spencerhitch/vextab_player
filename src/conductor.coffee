@@ -11,7 +11,7 @@ $ = require 'jquery'
 paper = require 'paper'
 
 class Vex.Flow.Conductor
-  @DEBUG = true
+  @DEBUG = false
   @INSTRUMENTS_LOADED = {}
   L = (args...) -> console?.log("(Vex.Flow.Conductor)", args...) if Vex.Flow.Conductor.DEBUG
 
