@@ -11,7 +11,7 @@ $ = require 'jquery'
 paper = require 'paper'
 
 class Vex.Flow.Conductor
-  @DEBUG = false
+  @DEBUG = true
   @INSTRUMENTS_LOADED = {}
   L = (args...) -> console?.log("(Vex.Flow.Conductor)", args...) if Vex.Flow.Conductor.DEBUG
 
@@ -76,9 +76,14 @@ class Vex.Flow.Conductor
     @stopPlayers()
 
   getOverlay = (context, scale, overlay_class) ->
-    canvas = context.canvas
-    height = canvas.height
-    width = canvas.width
+    if context.canvas?
+      canvas = context.canvas
+      height = canvas.height
+      width = canvas.width
+    else if context.svg?
+      canvas = context.element
+      height = 25
+      width = context.width
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
@@ -116,7 +121,6 @@ class Vex.Flow.Conductor
       overlay = getOverlay(data.context, data.scale, @options.overlay_class)
       @paper = overlay.paper
 
-    @marker = new @paper.Path.Rectangle(0,0,13,85)
     @loading_message = new @paper.PointText(35, 12)
 
     if @options.show_controls
@@ -133,12 +137,6 @@ class Vex.Flow.Conductor
       @stop_button.onMouseUp = (event) =>
         @stopPlayers()
 
-    @paper.view.draw()
-
-  updateMarker: (x, y) ->
-    @marker.fillColor = '#369'
-    @marker.opacity = 0.2
-    @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
     @paper.view.draw()
 
   stopPlayers: ->

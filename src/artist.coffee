@@ -225,10 +225,7 @@ class Artist
     for stavegroup in @stavegroups
       L "Rendering stavegroups."
 
-#      staves = []
-
       for stave, i in stavegroup.staves
-        L "Rendering staves."
         # If the last note is a bar, then remove it and render it as a stave modifier.
         setBar(stave.tab, stave.tab_notes) if stave.tab?
         setBar(stave.note, stave.note_notes) if stave.note?
@@ -254,8 +251,6 @@ class Artist
           player.setConductor(@conductor)
           player.setChannelNumber(@conductor.getPlayersLength())
           @conductor.addPlayer(player)
-    
-#    @player_staves.push(staves)
 
     L "Rendering tab articulations."
     for articulation in @tab_articulations

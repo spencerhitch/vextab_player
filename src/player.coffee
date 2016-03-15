@@ -91,12 +91,18 @@ class Vex.Flow.Player
     @stop()
 
   getOverlay = (context, scale, overlay_class) ->
-    canvas = context.canvas
-    height = canvas.height
-    width = canvas.width
+    if context.canvas?
+      canvas = context.canvas
+      height = canvas.height
+      width = canvas.width
+    else if context.svg?
+      canvas = context.element
+      height = context.height
+      width = context.width
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
+    overlay.css("z-index", "-1")
     overlay.css("left", 22)
     overlay.css("top", 55)
     overlay.addClass(overlay_class)
