@@ -10,11 +10,11 @@
 %}
 
 %lex
-%s notes text slur annotations options command stavegroup
+%s notes text slur annotations options command stavegroup name
 %%
 
 <INITIAL>"notes"          { this.begin('notes'); return 'NOTES'; }
-<INITIAL>"stavegroup"          { this.begin('stavegroup'); return 'STAVEGROUP'; }
+<INITIAL>"stavegroup"     { this.begin('stavegroup'); return 'STAVEGROUP'; }
 <INITIAL>"options"        { this.begin('options'); return 'OPTIONS'; }
 <INITIAL>"text"           { this.begin('text'); return 'TEXT'; }
 <INITIAL>"slur"           { this.begin('options'); return 'SLUR'; }
@@ -40,7 +40,6 @@
 <text>[^,\r\n]+           return 'STR'
 
 "/"                       return '/'
-"+"                       return '+'
 ":"                       return ':'
 "="                       return '='
 "("                       return '('
@@ -87,6 +86,13 @@
 <notes>[n]                return 'n'
 <notes>[m]                return 'm'
 <notes>[~]                return '~'
+
+
+/* DONOR NAME */
+<notes>[+]                     { this.begin('name');  return '+';}
+<name>[A-Z][a-z]+_[A-Z][a-z]+   {return 'NAME' ;}
+<name>[+]                      { this.begin('notes'); return '+' ;}
+
 
 /* Newlines reset your state */
 [\r\n]+               { this.begin('INITIAL'); }
@@ -447,8 +453,13 @@ rest
   ;
 
 abc
-  : ABC abc_accidental accidental_type
-    { $$ = {key: $1, accidental: $2, accidental_type: $3} }
+  : ABC abc_accidental accidental_type donor_name
+    { $$ = {key: $1, accidental: $2, accidental_type: $3, donor_name: $4} }
+  ;
+
+donor_name
+  : '+' NAME '+'        { $$ = $2 }
+  |
   ;
 
 abc_accidental

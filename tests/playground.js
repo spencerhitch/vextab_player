@@ -8,7 +8,7 @@ $(function() {
   Artist = vextab.Artist;
   Renderer = vextab.Vex.Flow.Renderer;
 
-  Artist.DEBUG = false;
+  Artist.DEBUG = true;
   Artist.NOLOGO = true;
   VexTab.DEBUG = false;
 

@@ -343,12 +343,16 @@ class Artist
 
     _.extend(params, note_params)
     stave_notes = _.last(_.last(@stavegroups).staves).note_notes
+
+    # In theory we should be able to handle the whole muting thing here
+    # in player it would skip if is_muted
     stave_note = new Vex.Flow.StaveNote({
       keys: params.spec
       duration: @current_duration + (if params.is_rest then "r" else "")
       clef: if params.is_rest then "treble" else @current_clef
       auto_stem: if params.is_rest then false else true
     })
+    stave_note.setDonor params.donor_name
     for acc, index in params.accidentals
       if acc?
         parts = acc.split("_")
@@ -822,7 +826,6 @@ class Artist
     return if _.isEmpty(chord)
     L "addChord: ", chord
     stave = _.last(_.last(@stavegroups).staves)
-    L "stave in addChord.", stave
 
     specs = []          # The stave note specs
     play_notes = []     # Notes to be played by audio players
@@ -860,6 +863,9 @@ class Artist
       play_note = null
 
       if note.abc?
+        donor_name = ""
+        if note.abc.donor_name?
+          donor_name = note.abc.donor_name
         octave = if note.octave? then note.octave else note.string
         [new_note, new_octave, accidental] = @getNoteForABC(note.abc, octave)
         if accidental?
@@ -890,7 +896,7 @@ class Artist
       saved_duration = @current_duration
       @setDuration(durations[i].time, durations[i].dot) if durations[i]?
       @addTabNote tab_specs[i], play_notes[i]
-      @addStaveNote {spec: spec, accidentals: accidentals[i], play_note: play_notes[i]} if stave.note?
+      @addStaveNote {spec: spec, accidentals: accidentals[i], play_note: play_notes[i], donor_name: donor_name} if stave.note?
       @addArticulations articulations[i]
       @addDecorator decorators[i] if decorators[i]?
 
