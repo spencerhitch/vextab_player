@@ -8,7 +8,7 @@ $(function() {
   Artist = vextab.Artist;
   Renderer = vextab.Vex.Flow.Renderer;
 
-  Artist.DEBUG = true;
+  Artist.DEBUG = false;
   Artist.NOLOGO = true;
   VexTab.DEBUG = false;
 
@@ -35,6 +35,21 @@ $(function() {
     }
   }
 
+  
+  $("#buy_note").submit(function(e) {
+      var first_name = "";
+      var last_name = "";
+      var instrument = ""; 
+      if ($("input[name='first_name']").val() && $("input[name='last_name']").val()) {
+          first_name = $("input[name='first_name']").val();
+          last_name = $("input[name='last_name']").val();
+          instrument = $("input[name='instrument']:checked").val();
+      }
+      var donor_name = '+' + first_name + '_' + last_name + '+'
+      console.log("Form submitted: ", donor_name, instrument);
+      e.preventDefault();
+  });
+ 
   $("#blah").keyup(_.throttle(render, 250));
   render();
 });

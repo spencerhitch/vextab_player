@@ -18,6 +18,11 @@
       width: 600;
     }
 
+    .page_container{
+      width:880px;
+      display:block;
+    }
+
     textarea#blah {
       width: 500px;
       height: 300px;
@@ -49,10 +54,11 @@
 </head>
 
 <body>
+  <div class="page_container">
   <h1>Sinfonía Playground</h1>
 
-  <div class="container" style="float:left;width:600;">
-    <svg width="600" height="400" id="boo"></svg>
+  <div class="container" style="float:left;width:500;">
+    <svg width="500" height="200" id="boo"></svg>
     <div id="error"></div>
   </div>
 
@@ -60,13 +66,27 @@
     <textarea id="blah">options player=true
 stavegroup
 stave instrument=trumpet
-notes :8 G+Paula_Jaramillo+/4 | Cm/5 :qCm/5 :8G+Maria_Araujo+/4 E+Fidel_Jaramillo+/5 :qE+Diana_Jaramillo+/5 :8G+Nicky_Jaramillo+/4 |
-notes C/5 G-E-G/4 :qC/4 ## |
+notes :8 Gm/4 | Cm/5 :qCm/5 :8Gm/4 Em/5 :qEm/5 :8Gm/4 |
+notes Cm/5 Gm-Em-Gm/4 :qCm/4 ## |
 stave instrument=flute
-notes :8 G/4 | :qdCm/5 :8G/4 :qdE/5 :8G/4 |
-notes C/5 G-E-G/4 :qC/4 ## |
+notes :8 Gm/4 | :qdCm/5 :8Gm/4 :qdEm/5 :8Gm/4 |
+notes Cm/5 Gm-Em-Gm/4 :qCm/4 ## |
             
     </textarea>
+  </div>
+
+  <div class="form_container">
+    <h4>Compra una nota</h4>
+    <form id="buy_note">
+      Nombre: <input type="text" name="first_name" />
+      <br>
+      Apellido: <input type="text" name="last_name" />
+      <br>
+      <input type="radio" name="instrument" value="trumpet" checked> Trompeta
+      <input type="radio" name="instrument" value="flute"> Flauta
+      <input type="submit" name="submit" value="Enviar">
+    </form>
+  </div>
   </div>
 </body>
 

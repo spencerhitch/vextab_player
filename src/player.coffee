@@ -10,7 +10,7 @@ $ = require 'jquery'
 paper = require 'paper'
 
 class Vex.Flow.Player
-  @DEBUG = true
+  @DEBUG = false
   L = (args...) -> console?.log("(Vex.Flow.Player)", args...) if Vex.Flow.Player.DEBUG
 
   Fraction = Vex.Flow.Fraction
