@@ -84,7 +84,7 @@
 /* ABC */
 <notes>[A-GXLR]           return 'ABC'
 <notes>[n]                return 'n'
-<notes>[m]                return 'm'
+<notes>[*]                return '*'
 <notes>[~]                return '~'
 
 
@@ -468,12 +468,12 @@ abc_accidental
   | '@'                 { $$ = "b" }   // flat
   | '@' '@'             { $$ = "bb" }  // double flat
   | 'n'                 { $$ = "n" }   // natural
-  | 'm'                 { $$ = "m" }   // mute 
-  | '#' 'm'             { $$ = "#m" }  // muted sharp
-  | '#' '#' 'm'         { $$ = "##m" } // muted double sharp
-  | '@' 'm'             { $$ = "bm" }  // muted flat
-  | '@' '@' 'm'         { $$ = "bbm" } // muted double flat
-  | 'n' 'm'             { $$ = "nm" }  // muted natural
+  | '*'                 { $$ = "*" }   // mute 
+  | '#' '*'             { $$ = "#*" }  // muted sharp
+  | '#' '#' '*'         { $$ = "##*" } // muted double sharp
+  | '@' '*'             { $$ = "b*" }  // muted flat
+  | '@' '@' '*'         { $$ = "bb*" } // muted double flat
+  | 'n' '*'             { $$ = "n*" }  // muted natural
   |
   ;
 

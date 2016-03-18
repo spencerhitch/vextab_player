@@ -353,6 +353,8 @@ class Artist
       auto_stem: if params.is_rest then false else true
     })
     stave_note.setDonor params.donor_name
+    if params.accidentals?[0] == 'm'
+      L "params: ", params
     for acc, index in params.accidentals
       if acc?
         parts = acc.split("_")
