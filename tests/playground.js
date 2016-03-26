@@ -8,7 +8,7 @@ $(function() {
   Artist = vextab.Artist;
   Renderer = vextab.Vex.Flow.Renderer;
 
-  Artist.DEBUG = true;
+  Artist.DEBUG = false;
   Artist.NOLOGO = true;
   VexTab.DEBUG = false;
 
@@ -35,6 +35,20 @@ $(function() {
     }
   }
 
+  function findStaveN(s, n, cut) {
+     if (n < 1) return;
+     var start =  s.indexOf("stave ") + 6;
+     var sub = s.substring(start);
+     if (n == 1) {
+         console.log("returning", sub);
+         return {thenOn: sub, cut: cut+start} ;
+     }
+     return findStaveN(sub, n-1, cut+start); 
+  }
+
+  function replaceNextMuteNoteWithDonor(s, d) {
+      return s.replace('*',d);
+  }
   
   $("#buy_note").submit(function(e) {
       var first_name = "";
@@ -45,14 +59,14 @@ $(function() {
           last_name = $("input[name='last_name']").val();
           instrument_number = $("input[name='instrument']:checked").val();
       }
+      // TODO: add validation so only names with [A-Z][a-z]+ match
       var donor_name = '+' + first_name + '_' + last_name + '+'
-      console.log("Form submitted: ", donor_name, instrument_number);
       var prev_content = $("#blah").val();
-      console.log("finding stave: ", prev_content.indexOf("stave"));
-      
-      // Find Ms if they're not in ++s annotations, options, etc. 
-      // Maybe I can just look at the vextab artist and get the line
-      // and column number of the mutes
+      var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
+      var new_content = prev_content.substring(0,modify.cut)
+                      + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
+      $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
+      render();
       e.preventDefault();
   });
  
