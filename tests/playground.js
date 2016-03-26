@@ -49,6 +49,13 @@ $(function() {
   function replaceNextMuteNoteWithDonor(s, d) {
       return s.replace('*',d);
   }
+
+  function validate(first_name, last_name){
+    var regex =  new RegExp("[A-Z][a-z]*");
+    if (first_name == "" || last_name == "") throw "Missing field";
+    if (!regex.test(first_name)) throw "First name must have initial capitalization."
+    if (!regex.test(last_name)) throw "Last name must have initial capitalization."
+  }
   
   $("#buy_note").submit(function(e) {
       var first_name = "";
@@ -59,7 +66,14 @@ $(function() {
           last_name = $("input[name='last_name']").val();
           instrument_number = $("input[name='instrument']:checked").val();
       }
-      // TODO: add validation so only names with [A-Z][a-z]+ match
+      try {
+        validate(first_name, last_name);
+      }
+      catch (err) {
+          $("#error").html(err.replace(/[\n]/g, '<br/>'));
+          e.preventDefault();
+          return;
+      }
       var donor_name = '+' + first_name + '_' + last_name + '+'
       var prev_content = $("#blah").val();
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
