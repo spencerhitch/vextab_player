@@ -19,7 +19,7 @@ $(function() {
   renderer = new Renderer($('#boo')[0], Renderer.Backends.SVG);
 
   // Initialize VexTab artist and parser.
-  artist = new Artist(10, 10, 1200, {scale: 0.8});
+  artist = new Artist(10, 10, 1200, {scale: 0.7});
   vextab = new VexTab(artist);
 
   function render() {
