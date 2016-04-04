@@ -19,7 +19,7 @@ $(function() {
   renderer = new Renderer($('#boo')[0], Renderer.Backends.SVG);
 
   // Initialize VexTab artist and parser.
-  artist = new Artist(10, 10, 600, {scale: 0.8});
+  artist = new Artist(10, 10, 1200, {scale: 0.8});
   vextab = new VexTab(artist);
 
   function render() {
@@ -51,7 +51,7 @@ $(function() {
   }
 
   function validate(first_name, last_name){
-    var regex =  new RegExp("[A-Z][a-z]*");
+    var regex =  new RegExp("^[A-Z][a-z]*$");
     if (first_name == "" || last_name == "") throw "Missing field";
     if (!regex.test(first_name)) throw "First name must have initial capitalization."
     if (!regex.test(last_name)) throw "Last name must have initial capitalization."
