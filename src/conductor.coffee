@@ -35,7 +35,12 @@ class Vex.Flow.Conductor
     "tenor_sax": 66,
     "baritone_sax": 67,
     "flute": 73,
-    "synth_drum": 118
+    "synth_drum": 118,
+    "violin": 40,
+    "viola": 41,
+    "cello": 42,
+    "timpani": 47,
+    "oboe": 68
   }
 
   constructor: (@artist, options) ->
