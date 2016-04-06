@@ -2,6 +2,7 @@
 vextab = require("vextab");
 $ = require("jquery");
 _ = require("underscore");
+require("jquery-mousewheel")($);
 
 $(function() {
   VexTab = vextab.VexTab;
@@ -83,7 +84,13 @@ $(function() {
       render();
       e.preventDefault();
   });
- 
+
+  $(".container").mousewheel(function (e,d) {
+    console.log("Delta: ", d);
+    this.scrollLeft -= d;
+    e.preventDefault();
+  });
+
   $("#blah").keyup(_.throttle(render, 250));
   render();
 });

@@ -10,6 +10,7 @@
       color: #554;
       margin: 0px;
       height: 100%;
+      overflow-y:hidden;
     }
 
     #error {
@@ -19,11 +20,12 @@
     }
 
     .page_container{
-      width:6000px;
       display:block;
+      width:100%;
     }
 
     textarea#blah {
+      display:none;
       width: 500px;
       height: 300px;
       font-family: Courier;
@@ -31,6 +33,18 @@
       padding: 10px;
       margin-top: 40px;
       border: #eee solid 10px;
+    }
+    .form_container {
+      display:none;
+    }
+    .container {
+      position:relative;
+      margin:0 auto;
+      width: 1200px;
+      overflow-x: scroll;
+    }
+    .container::-webkit-scrollbar {
+      display:none;
     }
 
   </style>
@@ -55,7 +69,7 @@
 
 <body>
   <div class="page_container">
-  <div class="container" style="float:left;width:6000;">
+  <div class="container">
     <svg width="6000" height="560" id="boo"></svg>
     <div id="error"></div>
   </div>
