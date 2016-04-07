@@ -92,6 +92,7 @@ class Vex.Flow.Conductor
 
     overlay = $('<canvas>')
     overlay.css("position", "absolute")
+    overlay.css("id", "play_buttons")
     overlay.css("left", 10)
     overlay.css("top", 5)
     overlay.addClass(overlay_class)

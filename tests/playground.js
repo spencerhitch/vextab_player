@@ -20,8 +20,21 @@ $(function() {
   renderer = new Renderer($('#boo')[0], Renderer.Backends.SVG);
 
   // Initialize VexTab artist and parser.
-  artist = new Artist(10, 10, 6000, {scale: 0.75});
+  artist = new Artist(10, 10, 24000, {scale: 0.75});
   vextab = new VexTab(artist);
+
+  function tinySVG(svg) {
+    var new_innards = svg.html().replace(/width="\d+"/, "width=\"2400\"");
+    new_innards = new_innards.replace(/height="\d+\.?\d+"/, "height=\"200\"");
+    svg.empty();
+    svg.append(new_innards);
+    console.log("svg : ", svg);
+    svg.css("top","0");
+    svg.css("width","1200");
+    svg.css("height","200");
+    svg.css("margin","0 auto");
+    $(".container").after(svg);
+  }
 
   function render() {
     try {
@@ -30,6 +43,7 @@ $(function() {
       vextab.parse($("#blah").val());
       artist.render(renderer);
       $("#error").text("");
+      tinySVG($("#boo").clone())
     } catch (e) {
       console.log(e);
       $("#error").html(e.message.replace(/[\n]/g, '<br/>'));
@@ -41,7 +55,6 @@ $(function() {
      var start =  s.indexOf("stave ") + 6;
      var sub = s.substring(start);
      if (n == 1) {
-         console.log("returning", sub);
          return {thenOn: sub, cut: cut+start} ;
      }
      return findStaveN(sub, n-1, cut+start); 
@@ -86,7 +99,6 @@ $(function() {
   });
 
   $(".container").mousewheel(function (e,d) {
-    console.log("Delta: ", d);
     this.scrollLeft -= d;
     e.preventDefault();
   });
