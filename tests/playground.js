@@ -30,10 +30,10 @@ $(function() {
     svg.append(new_innards);
     console.log("svg : ", svg);
     svg.css("top","0");
-    svg.css("width","1200");
+    svg.css("width","2400");
     svg.css("height","200");
     svg.css("margin","0 auto");
-    $(".container").after(svg);
+    $(".preview_container").append(svg);
   }
 
   function render() {
@@ -98,8 +98,10 @@ $(function() {
       e.preventDefault();
   });
 
-  $(".container").mousewheel(function (e,d) {
-    this.scrollLeft -= d;
+  $(".score_container").mousewheel(function (e,d) {
+    console.log("Mousewheel: ", d);
+    this.scrollLeft -= 10 * d;
+//    $(".preview_container").scrollLeft -= d;
     e.preventDefault();
   });
 

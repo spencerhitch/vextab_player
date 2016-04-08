@@ -97,7 +97,7 @@ class Vex.Flow.Conductor
     overlay.css("top", 5)
     overlay.addClass(overlay_class)
 
-    $(canvas).after(overlay)
+    $(canvas).parent().before(overlay)
     ctx = Vex.Flow.Renderer.getCanvasContext(overlay.get(0), width, height)
     ctx.scale(scale, scale)
 

@@ -37,13 +37,23 @@
     .form_container {
       display:none;
     }
-    .container {
+    .score_view{
+      width:1200px;
       position:relative;
-      margin:0 auto;
-      width: 24000px;
+      margin: 0 auto;
+    }
+    .score_container {
+      width: 100%;
       overflow-x: scroll;
     }
-    .container::-webkit-scrollbar {
+    .score_container::-webkit-scrollbar {
+      display:none;
+    }
+    .preview_container {
+      width: 100%;
+      overflow-x: scroll;
+    }
+    .preview_container::-webkit-scrollbar {
       display:none;
     }
 
@@ -69,10 +79,14 @@
 
 <body>
   <div class="page_container">
-  <div class="container">
-    <svg width="12000" height="560" id="boo"></svg>
-    <div id="error"></div>
-  </div>
+    <div class="score_view">
+      <div class="score_container">
+        <svg width="18000" height="560" id="boo"></svg>
+        <div id="error"></div>
+      </div>
+      <div class="preview_container"></div>
+    </div>
+
 
   <div style="float:left;">
     <textarea id="blah">options player=true
