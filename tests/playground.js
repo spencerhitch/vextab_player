@@ -98,10 +98,12 @@ $(function() {
       e.preventDefault();
   });
 
-  $(".score_container").mousewheel(function (e,d) {
+  $(".score_view").mousewheel(function (e,d) {
     console.log("Mousewheel: ", d);
-    this.scrollLeft -= 10 * d;
-//    $(".preview_container").scrollLeft -= d;
+    var score_scroll = $(".score_container").scrollLeft();
+    $(".score_container").scrollLeft(score_scroll - 10 * d);
+    var preview_scroll = $(".preview_container").scrollLeft();
+    $(".preview_container").scrollLeft(preview_scroll - 0.75 * d);
     e.preventDefault();
   });
 
