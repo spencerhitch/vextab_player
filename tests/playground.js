@@ -25,15 +25,15 @@ $(function() {
 
   function tinySVG(svg) {
     var new_innards = svg.html().replace(/width="\d+"/, "width=\"2400\"");
-    new_innards = new_innards.replace(/height="\d+\.?\d+"/, "height=\"200\"");
+    new_innards = new_innards.replace(/height="\d+\.?\d+"/, "height=\"100\"");
     svg.empty();
     svg.append(new_innards);
     console.log("svg : ", svg);
     svg.css("top","0");
     svg.css("width","2400");
-    svg.css("height","200");
+    svg.css("height","100");
     svg.css("margin","0 auto");
-    $(".preview_container").append(svg);
+    $(".preview").append(svg);
   }
 
   function render() {
@@ -100,10 +100,20 @@ $(function() {
 
   $(".score_view").mousewheel(function (e,d) {
     console.log("Mousewheel: ", d);
+
     var score_scroll = $(".score_container").scrollLeft();
     $(".score_container").scrollLeft(score_scroll - 10 * d);
-    var preview_scroll = $(".preview_container").scrollLeft();
-    $(".preview_container").scrollLeft(preview_scroll - 0.75 * d);
+
+    var preview_scroll = $(".preview").scrollLeft();
+    $(".preview").scrollLeft(preview_scroll - 0.75 * d);
+
+    var viewing_left = $(".viewing_box").css("left");
+    viewing_left = parseInt(viewing_left.substring(0,viewing_left.length - 2)) - 0.7 * d;
+    if (viewing_left > 0 && viewing_left < 1080) {
+      console.log("viewing_left", viewing_left);
+      $(".viewing_box").css("left", viewing_left + "px");
+    }
+
     e.preventDefault();
   });
 

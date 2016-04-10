@@ -49,12 +49,26 @@
     .score_container::-webkit-scrollbar {
       display:none;
     }
-    .preview_container {
+
+    .preview_container{
+      position:relative;
+    }
+
+    .preview {
+      position:absolute;
       width: 100%;
       overflow-x: scroll;
     }
-    .preview_container::-webkit-scrollbar {
+    .preview::-webkit-scrollbar {
       display:none;
+    }
+
+    .viewing_box {
+      left: 0px;
+      position:absolute;
+      width:120px;
+      background-color:rgba(120,120,120,0.2);
+      height:100px;
     }
 
   </style>
@@ -84,7 +98,10 @@
         <svg width="18000" height="560" id="boo"></svg>
         <div id="error"></div>
       </div>
-      <div class="preview_container"></div>
+      <div class="preview_container">
+        <div class="preview"></div>
+        <div class="viewing_box"></div>
+      </div>
     </div>
 
 
