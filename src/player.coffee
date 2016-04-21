@@ -106,10 +106,10 @@ class Vex.Flow.Player
       width = context.width
 
     overlay = $('<canvas>')
-    overlay.css("position", "absolute")
+    overlay.css("position", "relative")
     overlay.css("z-index", "-1")
     overlay.css("left", 0)
-    overlay.css("top", 0)
+    overlay.css("top", -560)
     overlay.addClass(overlay_class)
 
     $(canvas).after(overlay)
