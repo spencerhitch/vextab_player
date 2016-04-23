@@ -144,6 +144,10 @@ class Vex.Flow.Conductor
       @stop_button.onMouseUp = (event) =>
         @stopPlayers()
 
+      MIDI.loadPlugin
+        soundfontUrl: @options.soundfont_url
+        instruments: @instruments
+
     @paper.view.draw()
 
   stopPlayers: ->
@@ -175,16 +179,10 @@ class Vex.Flow.Conductor
     if flag
       @startPlayers()
     else
-      L "Loading instruments..."
-      L self.loading_message
-      self.loading_message.content = "Loading instruments..."
-      self.loading_message.fillColor = "green"
-      self.loading = true
-      self.paper.view.draw()
-      MIDI.loadPlugin
-        soundfontUrl: @options.soundfont_url
-        instruments: @instruments
-##        callback: () =>
+#      self.loading_message.content = "Loading instruments..."
+#      self.loading_message.fillColor = "green"
+#      self.loading = true
+#      self.paper.view.draw()
       _.each(@players, (player) ->
         Vex.Flow.Conductor.INSTRUMENTS_LOADED[player.instrument] = true
         MIDI.programChange(player.channelNumber, INSTRUMENTS[player.instrument]))
