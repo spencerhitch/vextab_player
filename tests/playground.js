@@ -98,20 +98,24 @@ $(function() {
   });
 
   $(".score_view").mousewheel(function (e,d) {
+    //If the score is playing disable mousewheel functionality
+    if (artist.conductor.playing_now) {
+      e.preventDefault();
+    } else {
+      var score_scroll = $(".score_container").scrollLeft();
+      $(".score_container").scrollLeft(score_scroll - 10 * d);
 
-    var score_scroll = $(".score_container").scrollLeft();
-    $(".score_container").scrollLeft(score_scroll - 10 * d);
+      var preview_scroll = $(".preview").scrollLeft();
+      $(".preview").scrollLeft(preview_scroll - 0.75 * d);
 
-    var preview_scroll = $(".preview").scrollLeft();
-    $(".preview").scrollLeft(preview_scroll - 0.75 * d);
+      var viewing_left = $(".viewing_box").css("left");
+      viewing_left = parseInt(viewing_left.substring(0,viewing_left.length - 2)) - 0.7 * d;
+      if (viewing_left > 0 && viewing_left < 1080) {
+        $(".viewing_box").css("left", viewing_left + "px");
+      }
 
-    var viewing_left = $(".viewing_box").css("left");
-    viewing_left = parseInt(viewing_left.substring(0,viewing_left.length - 2)) - 0.7 * d;
-    if (viewing_left > 0 && viewing_left < 1080) {
-      $(".viewing_box").css("left", viewing_left + "px");
+      e.preventDefault();
     }
-
-    e.preventDefault();
   });
 
   $("#blah").keyup(_.throttle(render, 250));

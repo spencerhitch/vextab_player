@@ -47,6 +47,7 @@ class Vex.Flow.Conductor
     L "Initializing conductor: ", options
     @players = []
     @instruments = []
+    @playing_now = false
     @options =
       tempo: 120
       show_controls: true
@@ -150,12 +151,15 @@ class Vex.Flow.Conductor
     _.each(@players, (player) -> player.stop())
     @play_button.fillColor = '#396' if @play_button?
     @paper.view.draw() if @paper?
+    @playing_now = false
 
   getPlayersLength: ->
     return @players.length
 
+
   startPlayers: ->
     L "Starting Players"
+    @playing_now = true
     @play_button.fillColor = '#a36' if @play_button?
     _.each(@players, (player) -> player.start())
 
@@ -180,13 +184,13 @@ class Vex.Flow.Conductor
       MIDI.loadPlugin
         soundfontUrl: @options.soundfont_url
         instruments: @instruments
-        callback: () =>
-          _.each(@players, (player) ->
-            Vex.Flow.Conductor.INSTRUMENTS_LOADED[player.instrument] = true
-            MIDI.programChange(player.channelNumber, INSTRUMENTS[player.instrument]))
-          self.loading_message.content = ""
-          self.loading = false
-          self.startPlayers()
+##        callback: () =>
+      _.each(@players, (player) ->
+        Vex.Flow.Conductor.INSTRUMENTS_LOADED[player.instrument] = true
+        MIDI.programChange(player.channelNumber, INSTRUMENTS[player.instrument]))
+      self.loading_message.content = ""
+      self.loading = false
+      self.startPlayers()
 
 module.exports = Vex.Flow.Conductor
 
