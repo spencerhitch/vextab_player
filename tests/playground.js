@@ -12,6 +12,19 @@ $(function() {
   Artist.DEBUG = false;
   Artist.NOLOGO = true;
   VexTab.DEBUG = false;
+  var score_scroll;
+  autoscroll = {
+    isScrolling: false,
+    current_scroll: 0,
+    scrollInterval: setInterval(function() {
+      if (autoscroll.isScrolling){
+        autoscroll.current_scroll = autoscroll.current_scroll + 105;
+        score_scroll.scrollLeft(autoscroll.current_scroll);
+      } else if (autoscroll.current_scroll != 0) {
+        autoscroll.current_scroll = 0;
+        score_scroll.scrollLeft(autoscroll.current_scroll);
+      }
+    } , 1000)}
 
   // Create VexFlow Renderer from canvas element with id #boo
 //  renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);
@@ -35,6 +48,18 @@ $(function() {
     $(".preview").append(svg);
   }
 
+  function startAutoScroll(){
+    console.log('startin');
+    autoscroll.isScrolling = true;
+  }
+
+  function stopAutoScroll(){
+    console.log('stoppin');
+    autoscroll.isScrolling = false;
+    //Stop the scroller and set scroll back to 0
+
+  }
+
   function render() {
     try {
       vextab.reset();
@@ -43,6 +68,18 @@ $(function() {
       artist.render(renderer);
       $("#error").text("");
       tinySVG($("#boo").clone())
+      artist.conductor.play_button.onMouseUp = function(event){
+        artist.conductor.play();
+        // Something's wrong with visualiztion on first play so play a second time for now
+        artist.conductor.play();
+        startAutoScroll();
+      };
+      artist.conductor.stop_button.onMouseUp = function(event){
+        artist.conductor.stopPlayers();
+        // Something's wrong with visualiztion on first play so play a second time for now
+        stopAutoScroll();
+      };
+      score_scroll = $(".score_container")
     } catch (e) {
       console.log(e);
       $("#error").html(e.message.replace(/[\n]/g, '<br/>'));
@@ -96,7 +133,7 @@ $(function() {
       render();
       e.preventDefault();
   });
-
+ 
   $(".score_view").mousewheel(function (e,d) {
     //If the score is playing disable mousewheel functionality
     if (artist.conductor.playing_now) {
