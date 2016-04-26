@@ -18,13 +18,13 @@ $(function() {
     current_scroll: 0,
     scrollInterval: setInterval(function() {
       if (autoscroll.isScrolling){
-        autoscroll.current_scroll = autoscroll.current_scroll + 105;
+        autoscroll.current_scroll = autoscroll.current_scroll + 57;
         score_scroll.scrollLeft(autoscroll.current_scroll);
       } else if (autoscroll.current_scroll != 0) {
         autoscroll.current_scroll = 0;
         score_scroll.scrollLeft(autoscroll.current_scroll);
       }
-    } , 1000)}
+    } , 500)}
 
   // Create VexFlow Renderer from canvas element with id #boo
 //  renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);
@@ -50,12 +50,14 @@ $(function() {
 
   function startAutoScroll(){
     console.log('startin');
+    $(".preview_container").css("display","none");
     autoscroll.isScrolling = true;
   }
 
   function stopAutoScroll(){
     console.log('stoppin');
     autoscroll.isScrolling = false;
+    $(".preview_container").css("display","block");
     //Stop the scroller and set scroll back to 0
 
   }
