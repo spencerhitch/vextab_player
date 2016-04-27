@@ -173,7 +173,7 @@ class Vex.Flow.Player
   updateMarker: (x, y) ->
     L "update marker: ", x, y
     @marker.fillColor = '#369'
-    @marker.opacity = 0.2
+    @marker.opacity = 0.4
     @marker.setPosition(new @paper.Point(x * @scale, y * @scale))
     @paper.view.draw()
 

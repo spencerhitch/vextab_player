@@ -133,6 +133,9 @@ $(function() {
       render();
       e.preventDefault();
   });
+
+  function sideScroll(d){
+  }
  
   $(".score_view").mousewheel(function (e,d) {
     //If the score is playing disable mousewheel functionality
