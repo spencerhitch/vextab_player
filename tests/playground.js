@@ -18,13 +18,13 @@ $(function() {
     current_scroll: 0,
     scrollInterval: setInterval(function() {
       if (autoscroll.isScrolling){
-        autoscroll.current_scroll = autoscroll.current_scroll + 17;
+        autoscroll.current_scroll = autoscroll.current_scroll + 16.5;
         score_scroll.scrollLeft(autoscroll.current_scroll);
       } else if (autoscroll.current_scroll != 0) {
         autoscroll.current_scroll = 0;
         score_scroll.scrollLeft(autoscroll.current_scroll);
       }
-    } , 120)}
+    } , 124)}
 
   // Create VexFlow Renderer from canvas element with id #boo
 //  renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);
