@@ -43,7 +43,7 @@ class Artist
       "stave-distance": 0
       "space": 0
       "player": "false"
-      "tempo": 120
+      "tempo": 135
       "accidentals": "standard"  # standard / cautionary
       "tab-stems": "false"
       "tab-stem-direction": "up"
