@@ -134,9 +134,6 @@ $(function() {
       e.preventDefault();
   });
 
-  function sideScroll(d){
-  }
- 
   $(".score_view").mousewheel(function (e,d) {
     //If the score is playing disable mousewheel functionality
     if (artist.conductor.playing_now) {
