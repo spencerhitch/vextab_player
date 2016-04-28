@@ -67,7 +67,9 @@ $(function() {
       vextab.parse($("#blah").val());
       artist.render(renderer);
       $("#error").text("");
-      tinySVG($("#boo").clone())
+      if ($(".preview").children().length == 0) {
+        tinySVG($("#boo").clone());
+      }
       artist.conductor.play_button.onMouseUp = function(event){
         artist.conductor.play();
         // Something's wrong with visualiztion on first play so play a second time for now
@@ -125,6 +127,7 @@ $(function() {
           return;
       }
       var donor_name = '+' + first_name + '_' + last_name + '+'
+      console.log("donor_name:", donor_name);
       var prev_content = $("#blah").val();
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
       var new_content = prev_content.substring(0,modify.cut)
