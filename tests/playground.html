@@ -35,11 +35,15 @@
     }
     .form_container {
     }
+
+    .busca_container {
+    }
     .score_view{
       width:1200px;
       height:660px;
       position:relative;
       margin: 0 auto;
+      overflow-x: hidden;
     }
     .score_container {
       height:560px;
@@ -387,24 +391,33 @@ notes G*-G*-G*-G*-G*-G*-G*-G*/2 | :q (G*/2.G*/3) ## :h (G*/2.G*/3) |
 </textarea>
   </div>
 
-  <div class="form_container">
-    <h4>Compra una nota</h4>
-    <form id="buy_note">
-      Nombre: <input type="text" name="first_name" />
-      <br>
-      Apellido: <input type="text" name="last_name" />
-      <br>
-      <input type="radio" name="instrument" value="1" checked> Oboe 
-      <input type="radio" name="instrument" value="2"> Trompeta 1
-      <input type="radio" name="instrument" value="3" > Trompeta 2
-      <input type="radio" name="instrument" value="4"> Tímpanos
-      <input type="radio" name="instrument" value="5" > Violín 1
-      <input type="radio" name="instrument" value="6"> Violín 2 
-      <input type="radio" name="instrument" value="7" > Viola 
-      <input type="radio" name="instrument" value="8"> Violonchelo 
-      <input type="submit" name="submit" value="Enviar">
-    </form>
-  </div>
+    <div class="form_container">
+      <h4>Compra una nota</h4>
+      <form id="buy_note">
+        Nombre: <input type="text" name="first_name" />
+        <br>
+        Apellido: <input type="text" name="last_name" />
+        <br>
+        <input type="radio" name="instrument" value="1" checked> Oboe 
+        <input type="radio" name="instrument" value="2"> Trompeta 1
+        <input type="radio" name="instrument" value="3" > Trompeta 2
+        <input type="radio" name="instrument" value="4"> Tímpanos
+        <input type="radio" name="instrument" value="5" > Violín 1
+        <input type="radio" name="instrument" value="6"> Violín 2 
+        <input type="radio" name="instrument" value="7" > Viola 
+        <input type="radio" name="instrument" value="8"> Violonchelo 
+        <input type="submit" name="submit" value="Enviar">
+      </form>
+    </div>
+    <div class="busca_container">
+      <form id="busca_mi_nota">
+        Nombre: <input type="text" name="first_name" />
+        <br>
+        Apellido: <input type="text" name="last_name" />
+        <br>
+        <input type="submit" name="submit" value="Busca mi nota">
+      </form>
+    </div>
   </div>
 </body>
 
