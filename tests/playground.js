@@ -142,7 +142,6 @@ $(function() {
       var donor_name = '+' + first_name + '_' + last_name + '+'
       var prev_content = $("#blah").val();
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
-      console.log("modification: ", modify);
       var new_content = prev_content.substring(0,modify.cut)
                       + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
       $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
