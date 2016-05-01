@@ -36,17 +36,17 @@ $(function() {
   artist = new Artist(10, 10, 24000, {scale: 0.75});
   vextab = new VexTab(artist);
 
-  function tinySVG(svg) {
-    var new_innards = svg.html().replace(/width="\d+"/, "width=\"2400\"");
-    new_innards = new_innards.replace(/height="\d+\.?\d+"/, "height=\"100\"");
-    svg.empty();
-    svg.append(new_innards);
-    svg.css("top","0");
-    svg.css("width","2400");
-    svg.css("height","100");
-    svg.css("margin","0 auto");
-    $(".preview").append(svg);
-  }
+//  function tinySVG(svg) {
+//    var new_innards = svg.html().replace(/width="\d+"/, "width=\"2400\"");
+//    new_innards = new_innards.replace(/height="\d+\.?\d+"/, "height=\"100\"");
+//    svg.empty();
+//    svg.append(new_innards);
+//    svg.css("top","0");
+//    svg.css("width","2400");
+//    svg.css("height","100");
+//    svg.css("margin","0 auto");
+//    $(".preview").append(svg);
+//  }
 
   function startAutoScroll(){
     $(".preview_container").css("display","none");
@@ -67,9 +67,9 @@ $(function() {
       vextab.parse($("#blah").val());
       artist.render(renderer);
       $("#error").text("");
-      if ($(".preview").children().length == 0) {
-        tinySVG($("#boo").clone());
-      }
+//      if ($(".preview").children().length == 0) {
+//        tinySVG($("#boo").clone());
+//      }
       artist.conductor.play_button.onMouseUp = function(event){
         artist.conductor.play();
         // Something's wrong with visualiztion on first play so play a second time for now
@@ -145,14 +145,14 @@ $(function() {
       var score_scroll = $(".score_container").scrollLeft();
       $(".score_container").scrollLeft(score_scroll - 10 * d);
 
-      var preview_scroll = $(".preview").scrollLeft();
-      $(".preview").scrollLeft(preview_scroll - 0.75 * d);
-
-      var viewing_left = $(".viewing_box").css("left");
-      viewing_left = parseInt(viewing_left.substring(0,viewing_left.length - 2)) - 0.7 * d;
-      if (viewing_left > 0 && viewing_left < 1080) {
-        $(".viewing_box").css("left", viewing_left + "px");
-      }
+//      var preview_scroll = $(".preview").scrollLeft();
+//      $(".preview").scrollLeft(preview_scroll - 0.75 * d);
+//
+//      var viewing_left = $(".viewing_box").css("left");
+//      viewing_left = parseInt(viewing_left.substring(0,viewing_left.length - 2)) - 0.7 * d;
+//      if (viewing_left > 0 && viewing_left < 1080) {
+//        $(".viewing_box").css("left", viewing_left + "px");
+//      }
 
       e.preventDefault();
     }
