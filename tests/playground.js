@@ -99,7 +99,20 @@ $(function() {
   }
 
   function replaceNextMuteNoteWithDonor(s, d) {
-      return s.replace('*',d);
+      var open_paren = s.indexOf('(');
+      var close_paren = s.indexOf(')');
+      var first_asterisk = s.indexOf('*');
+      if (first_asterisk > open_paren && first_asterisk < close_paren) {
+        while (first_asterisk > open_paren && first_asterisk < close_paren) {
+          s =  s.replace('*',d);
+          first_asterisk = s.indexOf('*');
+          open_paren = s.indexOf('(');
+          close_paren = s.indexOf(')');
+        }
+        return s;
+      } else {
+        return s.replace('*',d);
+      }
   }
 
   function validate(first_name, last_name){
@@ -127,9 +140,9 @@ $(function() {
           return;
       }
       var donor_name = '+' + first_name + '_' + last_name + '+'
-      console.log("donor_name:", donor_name);
       var prev_content = $("#blah").val();
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
+      console.log("modification: ", modify);
       var new_content = prev_content.substring(0,modify.cut)
                       + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
       $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
