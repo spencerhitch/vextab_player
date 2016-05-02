@@ -167,10 +167,10 @@ $(function() {
       var donor_name = first_name + '_' + last_name;
       var elem = $("svg").find("svg").find("g#vf-" + donor_name);
 
-      
       $(".score_container").scrollLeft(elem.position().left - 600);
+
       elem.find("path").css({"stroke" :"red", "fill":"red"});
-      console.log("Left of donor_name: ", elem);
+      $(".score_container").find("div." + donor_name).show().css({"top":elem.position().top, "left":elem.position().left}); 
 
       e.preventDefault();
   });
