@@ -166,7 +166,7 @@ $(function() {
       }
       var donor_name = first_name + '_' + last_name;
       var elem = $("svg").find("svg").find("g#vf-" + donor_name);
-      console.log(elem.0);
+      console.log(elem.position());
 
       e.preventDefault();
   });
