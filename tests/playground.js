@@ -149,6 +149,27 @@ $(function() {
       e.preventDefault();
   });
 
+  $("#busca_mi_nota").submit(function(e) {
+      var first_name = "";
+      var last_name = "";
+      if ($("input[name='first_name']").val() && $("input[name='last_name']").val()) {
+          first_name = $("input[name='first_name']").val();
+          last_name = $("input[name='last_name']").val();
+      }
+      try {
+        validate(first_name, last_name);
+      }
+      catch (err) {
+          $("#error").html(err.replace(/[\n]/g, '<br/>'));
+          e.preventDefault();
+          return;
+      }
+      var donor_name = first_name + '_' + last_name;
+      console.log($("svg").find("svg").find("g#vf-" + donor_name));
+
+      e.preventDefault();
+  });
+
   $(".score_view").mousewheel(function (e,d) {
     //If the score is playing disable mousewheel functionality
     if (artist.conductor.playing_now) {
