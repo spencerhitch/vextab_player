@@ -13,6 +13,7 @@ $(function() {
   Artist.NOLOGO = true;
   VexTab.DEBUG = false;
   var score_scroll;
+  var text = "";
   autoscroll = {
     isScrolling: false,
     current_scroll: 0,
@@ -64,23 +65,26 @@ $(function() {
     try {
       vextab.reset();
       artist.reset();
-      vextab.parse($("#blah").val());
-      artist.render(renderer);
+      $.get("./score.txt", function(data) {
+        text = data;
+        vextab.parse(data);
+        artist.render(renderer);
+        artist.conductor.play_button.onMouseUp = function(event){
+          artist.conductor.play();
+          // Something's wrong with visualiztion on first play so play a second time for now
+          artist.conductor.play();
+          startAutoScroll();
+        };
+        artist.conductor.stop_button.onMouseUp = function(event){
+          artist.conductor.stopPlayers();
+          stopAutoScroll();
+        };
+      });
+//      vextab.parse($("#blah").val());
       $("#error").text("");
 //      if ($(".preview").children().length == 0) {
 //        tinySVG($("#boo").clone());
 //      }
-      artist.conductor.play_button.onMouseUp = function(event){
-        artist.conductor.play();
-        // Something's wrong with visualiztion on first play so play a second time for now
-        artist.conductor.play();
-        startAutoScroll();
-      };
-      artist.conductor.stop_button.onMouseUp = function(event){
-        artist.conductor.stopPlayers();
-        // Something's wrong with visualiztion on first play so play a second time for now
-        stopAutoScroll();
-      };
       score_scroll = $(".score_container")
     } catch (e) {
       console.log(e);
@@ -140,12 +144,13 @@ $(function() {
           return;
       }
       var donor_name = '+' + first_name + '_' + last_name + '+'
-      var prev_content = $("#blah").val();
+      var prev_content = text;
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
       var new_content = prev_content.substring(0,modify.cut)
                       + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
-      $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
-      render();
+//      $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
+      text = new_content;
+      $.post("./add_donor.php", {text : text}).done(render());
       e.preventDefault();
   });
 
@@ -170,7 +175,7 @@ $(function() {
       $(".score_container").scrollLeft(elem.position().left - 600);
 
       elem.find("path").css({"stroke" :"red", "fill":"red"});
-      $(".score_container").find("div." + donor_name).show().css({"top":elem.position().top, "left":elem.position().left}); 
+      $(".score_container").find("div." + donor_name).show().css({"top":elem.position().top, "left":elem.position().left});
 
       e.preventDefault();
   });
