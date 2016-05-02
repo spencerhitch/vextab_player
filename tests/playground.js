@@ -126,10 +126,10 @@ $(function() {
       var first_name = "";
       var last_name = "";
       var instrument_number = ""; 
-      if ($("input[name='first_name']").val() && $("input[name='last_name']").val()) {
-          first_name = $("input[name='first_name']").val();
-          last_name = $("input[name='last_name']").val();
-          instrument_number = $("input[name='instrument']:checked").val();
+      if ($("#buy_note input[name='first_name']").val() && $("#buy_note input[name='last_name']").val()) {
+          first_name = $("#buy_note input[name='first_name']").val();
+          last_name = $("#buy_note input[name='last_name']").val();
+          instrument_number = $("#buy_note input[name='instrument']:checked").val();
       }
       try {
         validate(first_name, last_name);
@@ -152,9 +152,9 @@ $(function() {
   $("#busca_mi_nota").submit(function(e) {
       var first_name = "";
       var last_name = "";
-      if ($("input[name='first_name']").val() && $("input[name='last_name']").val()) {
-          first_name = $("input[name='first_name']").val();
-          last_name = $("input[name='last_name']").val();
+      if ($("#busca_mi_nota input[name='first_name']").val() && $("#busca_mi_nota input[name='last_name']").val()) {
+          first_name = $("#busca_mi_nota input[name='first_name']").val();
+          last_name = $("#busca_mi_nota input[name='last_name']").val();
       }
       try {
         validate(first_name, last_name);
@@ -166,7 +166,11 @@ $(function() {
       }
       var donor_name = first_name + '_' + last_name;
       var elem = $("svg").find("svg").find("g#vf-" + donor_name);
-      console.log(elem.position());
+
+      
+      $(".score_container").scrollLeft(elem.position().left - 600);
+      elem.find("path").css({"stroke" :"red", "fill":"red"});
+      console.log("Left of donor_name: ", elem);
 
       e.preventDefault();
   });
