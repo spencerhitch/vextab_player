@@ -130,22 +130,43 @@ $(function() {
     //Find next duration-specifier matching note_duration and the specifier after that
     //If there's no mute between duration specifiers, find next duration-specifier and repeat
 //    var start =  s.indexOf(":"+ note_duration);
+
     console.log("modify: ", modify);
-    result = modify;
-    return result;
+
+    // Match the note duration
+    var start = modify.thenOn.indexOf(":" + note_duration);
+    if (start <= 0) throw "No notes of that duration for that instrument exist.";
+
+    // Find the next note_duration
+    var next = modify.thenOn.indexOf(":", start);
+    if (next >= 0) {
+      next = start + next;
+    } else {
+      next = modify.thenOn.length;
+    }
+
+    if (modify.thenOn.substring(start, next).indexOf("*") >= 0) {
+      var result = {cut: modify.cut + start, thenOn: modify.thenOn(start)};
+      return result;
+    }
+    start = modify.thenOn.substring(start).indexOf(":" + note_duration);
   }
   
   $("#buy_note").submit(function(e) {
       var first_name = "";
       var last_name = "";
       var instrument_number = ""; 
+
       if ($("#buy_note input[name='first_name']").val() && $("#buy_note input[name='last_name']").val()) {
           first_name = $("#buy_note input[name='first_name']").val();
           last_name = $("#buy_note input[name='last_name']").val();
           instrument_number = $("#buy_note input[name='instrument']:checked").val();
           note_duration =  $("buy_note inpute[name='note_duration']:checked").val();
       }
+
+      var prev_content = text;
       var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
+
       try {
         validate_name(first_name, last_name);
         modify = validate_note(modify, note_duration);
@@ -155,11 +176,12 @@ $(function() {
           e.preventDefault();
           return;
       }
-      var donor_name = '+' + first_name + '_' + last_name + '+'
-      var prev_content = text;
+      var donor_name = '+' + first_name + '_' + last_name + '+';
+
       var new_content = prev_content.substring(0,modify.cut)
                       + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
       text = new_content;
+
       $.post("./add_donor.php", {text : text}).done(render());
       e.preventDefault();
   });
