@@ -119,11 +119,20 @@ $(function() {
       }
   }
 
-  function validate(first_name, last_name){
+  function validate_name(first_name, last_name){
     var regex =  new RegExp("^[A-Z][a-z]*$");
     if (first_name == "" || last_name == "") throw "Missing field";
     if (!regex.test(first_name)) throw "First name must have initial capitalization."
     if (!regex.test(last_name)) throw "Last name must have initial capitalization."
+  }
+
+  function validate_note(modify, note_duration) {
+    //Find next duration-specifier matching note_duration and the specifier after that
+    //If there's no mute between duration specifiers, find next duration-specifier and repeat
+//    var start =  s.indexOf(":"+ note_duration);
+    console.log("modify: ", modify);
+    result = modify;
+    return result;
   }
   
   $("#buy_note").submit(function(e) {
@@ -134,9 +143,12 @@ $(function() {
           first_name = $("#buy_note input[name='first_name']").val();
           last_name = $("#buy_note input[name='last_name']").val();
           instrument_number = $("#buy_note input[name='instrument']:checked").val();
+          note_duration =  $("buy_note inpute[name='note_duration']:checked").val();
       }
+      var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
       try {
-        validate(first_name, last_name);
+        validate_name(first_name, last_name);
+        modify = validate_note(modify, note_duration);
       }
       catch (err) {
           $("#error").html(err.replace(/[\n]/g, '<br/>'));
@@ -145,10 +157,8 @@ $(function() {
       }
       var donor_name = '+' + first_name + '_' + last_name + '+'
       var prev_content = text;
-      var modify = findStaveN(prev_content, parseInt(instrument_number), 0);
       var new_content = prev_content.substring(0,modify.cut)
                       + replaceNextMuteNoteWithDonor(modify.thenOn,donor_name);
-//      $("#blah").replaceWith("<textarea id=\"blah\">" + new_content + "</textarea>");
       text = new_content;
       $.post("./add_donor.php", {text : text}).done(render());
       e.preventDefault();
@@ -162,7 +172,7 @@ $(function() {
           last_name = $("#busca_mi_nota input[name='last_name']").val();
       }
       try {
-        validate(first_name, last_name);
+        validate_name(first_name, last_name);
       }
       catch (err) {
           $("#error").html(err.replace(/[\n]/g, '<br/>'));
