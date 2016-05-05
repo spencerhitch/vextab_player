@@ -133,28 +133,26 @@ $(function() {
 //
 
     // Match the note duration
-    var start = modify.thenOn.indexOf(":" + note_duration);
+    var start = modify.thenOn.indexOf(":" + note_duration) + 1;
+    console.log("start_first: ", start);
     var eol = modify.thenOn.indexOf("stave");
 
     while (start < eol && start >= 0 ) {
 
-      console.log("141");
       // Find the next note_duration
       var next = modify.thenOn.indexOf(":", start);
-      console.log("144");
-      var flag = false;
-      if (next >= 0) {
-        next = start + next;
-      } else {
+      if (next <= 0) {
         next = modify.thenOn.substring(eol);
       }
 
+      console.log('area', modify.thenOn.substring(start, next));
       if (modify.thenOn.substring(start, next).indexOf("*") >= 0) {
         var result = {cut: modify.cut + start, thenOn: modify.thenOn.substring(start)};
+        console.log("result", result);
         return result;
       }
-      console.log("158");
-      start = modify.thenOn.substring(start).indexOf(":" + note_duration);
+      start = modify.thenOn.indexOf(":" + note_duration, start) + 1;
+      console.log("start_new: ", start);
     }
     throw "No more notes of that duration."
   }
