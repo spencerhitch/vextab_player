@@ -130,26 +130,33 @@ $(function() {
     //Find next duration-specifier matching note_duration and the specifier after that
     //If there's no mute between duration specifiers, find next duration-specifier and repeat
 //    var start =  s.indexOf(":"+ note_duration);
-
-    console.log("modify: ", modify);
+//
 
     // Match the note duration
     var start = modify.thenOn.indexOf(":" + note_duration);
-    if (start <= 0) throw "No notes of that duration for that instrument exist.";
+    var eol = modify.thenOn.indexOf("stave");
 
-    // Find the next note_duration
-    var next = modify.thenOn.indexOf(":", start);
-    if (next >= 0) {
-      next = start + next;
-    } else {
-      next = modify.thenOn.length;
-    }
+    while (start < eol && start >= 0 ) {
 
-    if (modify.thenOn.substring(start, next).indexOf("*") >= 0) {
-      var result = {cut: modify.cut + start, thenOn: modify.thenOn(start)};
-      return result;
+      console.log("141");
+      // Find the next note_duration
+      var next = modify.thenOn.indexOf(":", start);
+      console.log("144");
+      var flag = false;
+      if (next >= 0) {
+        next = start + next;
+      } else {
+        next = modify.thenOn.substring(eol);
+      }
+
+      if (modify.thenOn.substring(start, next).indexOf("*") >= 0) {
+        var result = {cut: modify.cut + start, thenOn: modify.thenOn.substring(start)};
+        return result;
+      }
+      console.log("158");
+      start = modify.thenOn.substring(start).indexOf(":" + note_duration);
     }
-    start = modify.thenOn.substring(start).indexOf(":" + note_duration);
+    throw "No more notes of that duration."
   }
   
   $("#buy_note").submit(function(e) {
@@ -161,7 +168,7 @@ $(function() {
           first_name = $("#buy_note input[name='first_name']").val();
           last_name = $("#buy_note input[name='last_name']").val();
           instrument_number = $("#buy_note input[name='instrument']:checked").val();
-          note_duration =  $("buy_note inpute[name='note_duration']:checked").val();
+          note_duration =  $("#buy_note input[name='note_duration']:checked").val().toString();
       }
 
       var prev_content = text;
@@ -173,6 +180,7 @@ $(function() {
       }
       catch (err) {
           $("#error").html(err.replace(/[\n]/g, '<br/>'));
+          console.log("Throwing error: ", err);
           e.preventDefault();
           return;
       }
